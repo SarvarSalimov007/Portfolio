@@ -92,11 +92,11 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     const n = 3; // particles per frame when moving
     for (let i = 0; i < n; i++) {
       const angle = rand(0, Math.PI * 2);
-      const speed = rand(0.2, 0.9);
+      const speed = rand(0.6, 2.2); // ~3x faster
       const vx = Math.cos(angle) * speed;
       const vy = Math.sin(angle) * speed;
-      const size = rand(2, 3.6);
-      const life = rand(28, 50);
+      const size = rand(2, 3.2);
+      const life = rand(10, 18); // ~3x shorter
       hueTicker += 8;
       makeParticle(x, y, vx, vy, life, size, hueTicker);
     }
@@ -104,14 +104,14 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   // Click burst
   const burst = (x, y) => {
-    const count = 34;
+    const count = 28;
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 2 + rand(-0.12, 0.12);
-      const speed = rand(1.2, 3.2);
+      const speed = rand(3.0, 6.0); // ~3x faster
       const vx = Math.cos(angle) * speed;
       const vy = Math.sin(angle) * speed;
-      const size = rand(2.4, 4.4);
-      const life = rand(36, 60);
+      const size = rand(2.2, 3.8);
+      const life = rand(14, 24); // ~3x shorter
       hueTicker += 10;
       makeParticle(x, y, vx, vy, life, size, hueTicker);
     }
@@ -139,11 +139,10 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     const dt = Math.min(33, t - lastTime || 16.7);
     lastTime = t;
 
-    // Fade canvas slightly for trail persistence
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+    // Fade trails without darkening background using destination-out
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.18)'; // clear a bit stronger for faster fade
     ctx.fillRect(0, 0, width, height);
-
     ctx.globalCompositeOperation = 'lighter';
 
     // Update & draw
@@ -156,16 +155,16 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
       }
       p.x += p.vx;
       p.y += p.vy;
-      p.vx *= 0.985; p.vy *= 0.985; // slight drag
+      p.vx *= 0.982; p.vy *= 0.982; // slight drag
 
       const alpha = Math.max(0, p.life / p.max);
       const size = p.size * (0.6 + 0.4 * alpha);
       const hue = (p.hue % 360);
-      const color = `hsla(${hue}, 100%, 60%, ${0.18 + alpha * 0.42})`;
-      const glow = `hsla(${(hue + 40) % 360}, 100%, 55%, ${0.12 + alpha * 0.3})`;
+      const color = `hsla(${hue}, 100%, 60%, ${0.24 + alpha * 0.40})`;
+      const glow = `hsla(${(hue + 40) % 360}, 100%, 55%, ${0.16 + alpha * 0.28})`;
 
       // Outer glow
-      ctx.shadowBlur = 24;
+      ctx.shadowBlur = 16; // simpler glow
       ctx.shadowColor = glow;
       ctx.fillStyle = color;
       ctx.beginPath();
