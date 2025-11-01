@@ -11,7 +11,6 @@
 > **Software Engineer | Full-Stack Developer**  
 > React, Next.js, TypeScript, Node.js bilan zamonaviy web ilovalari yarataman.
 
-![Portfolio Preview](sarvar.jpg)
 
 ---
 
