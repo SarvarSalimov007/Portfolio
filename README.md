@@ -1,87 +1,128 @@
-# 👾 Sarvar'ning README (Zamonaviy, Qimirlovchi)
+# 💻 Sarvar Salimov — Portfolio
 
-> *Bu README portfolingiz uchun moʻljallangan — qoralama sifatida oling va `EXA_GAMER_007` joylari sizning haqiqiy profilingizga mos.*
 
----
 
-<p align="center">
-  <img src="https://media.giphy.com/media/3o7qE1YN7aBOFPRw8E/giphy.gif" alt="Yomg'ir" width="100%"/>
-</p>
+<p align="center"> <img src="https://media.giphy.com/media/3o7qE1YN7aBOFPRw8E/giphy.gif" alt="Yomg'ir" width="100%"/></p>
 
-<p align="center">
-  <h1 align="center">Salom — Men <em><strong>EXA_GAMER_007</strong></em></h1>
-  <p align="center">_Kod yozaman. Tizimlarni o'rganaman. Kechasi yomg'ir yog'ayotgandek fikrlayman._</p>
-</p>
 
----
 
-## 🔭 Qisqacha — nima qilaman
 
-- 🚀 Full‑stack / DevOps jihatlar bilan qiziqaman.
-- 🔐 Xavfsizlik va low‑level eksploratsiya yo'nalishida loyihalarim bor.
-- 🧪 Prototiplash, avtomatlashtirish, va real‑dunyo muammolarini hal etish — mening yo'nalishim.
+
+> **Software Engineer | Full-Stack Developer**  
+> React, Next.js, TypeScript, Node.js bilan zamonaviy web ilovalari yarataman.
+
+![Portfolio Preview](sarvar.jpg)
 
 ---
 
-## 🎯 Tez ma'lumotlar
+## ✨ Portfolio Xususiyatlari
 
-<p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com/?font=Fira+Code&size=24&pause=1000&color=00FF00&center=true&vCenter=true&width=720&lines=Yomg'ir+%7C+Code.+Explore.+Repeat.;Security+Enthusiast;Open+Source+Contributor" alt="Typing" />
-</p>
-
-<p align="center">
-  <a href="https://github.com/EXA_GAMER_007">
-    <img src="https://github-readme-stats.vercel.app/api?username=EXA_GAMER_007&show_icons=true&theme=dark&count_private=true" alt="GitHub stats" />
-  </a>
-  &nbsp;
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=EXA_GAMER_007&theme=dark" alt="streak" />
-</p>
+- 🎨 **Neon dizayn** — Zamonaviy va ko'zga yoqimli UI
+- 🌓 **Dark/Light rejim** — Foydalanuvchi qulayligi uchun
+- 📱 **Responsive** — Barcha qurilmalarda mukammal ko'rinish
+- ⚡ **Tezkor** — Optimallashtirilgan performance
+- ♿ **Accessible** — WCAG standartlariga mos
+- 🎭 **Animatsiyalar** — Interaktiv va jonli interfeys
 
 ---
 
-## 🧩 Asosiy texnologiyalar
+## 🛠️ Texnologiyalar
 
-```text
-Python  •  Go  •  Rust  •  JavaScript/TypeScript
-Docker  •  Kubernetes  •  Terraform  •  Linux
-Metasploit  •  Wireshark  •  GDB  •  Burp Suite
+### Frontend
+- HTML5, CSS3, JavaScript (ES2023)
+- TypeScript, React, Next.js
+- Tailwind CSS, Sass
+
+### Backend
+- Node.js, Express
+- REST API, GraphQL
+- OAuth2/JWT
+
+### Ma'lumotlar bazasi
+- SQLite, PostgreSQL
+
+### DevOps
+- GitHub Actions
+- Vercel Deployment
+- Docker, Nginx
+
+---
+
+## 🚀 Qo'shish va Ishga tushirish
+
+```bash
+# Repository'ni klonlash
+git clone https://github.com/SarvarSalimov007/Portfolio2.git
+
+# Papkaga kirish
+cd Portfolio2
+
+# Browser'da ochish
+# Oddiy index.html faylni oching yoki live server ishlating
+```
+
+**Yoki Vercel'da deploy qiling:**
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/SarvarSalimov007/Portfolio2)
+
+---
+
+## 📁 Fayl Strukturasi
+
+```
+Portfolio2/
+├── index.html      # Asosiy HTML
+├── styles.css      # Barcha stillar
+├── script.js       # JavaScript funksiyalari
+├── sarvar.jpg      # Profil rasmi
+└── README.md       # Bu fayl
 ```
 
 ---
 
-## 📂 Portfolio (tanlangan loyihalar)
+## 🎯 Portfolio Bo'limlari
 
-1. **StormShell** — tarmoq skaner + avtomatlashtirilgan post‑exploit skriptlar.  
-   _Rust, async, custom TCP stack, minimal footprint._  
-   https://github.com/EXA_GAMER_007/stormshell
-
-2. **RainLogger** — yomg'irli log vizualizatsiyasi (Realtime).  
-   _WebSocket, React, Grafana integration._  
-   https://github.com/EXA_GAMER_007/rainlogger
-
-3. **InfraForge** — infra as code + auditing pipelines.  
-   _Terraform + GitHub Actions + policy checks._  
-   https://github.com/EXA_GAMER_007/infraforge
+- **Hero** — Asosiy qism va profil
+- **Men haqimda** — Qisqa ma'lumot
+- **Ko'nikmalar** — Texnologiyalar va ko'nikmalar
+- **Loyihalar** — Portfolio loyihalari
+- **Bog'lanish** — Aloqa formasi
 
 ---
 
-## 📈 Activity & Live Badges
+## 📊 Stats
 
-```md
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=EXA_GAMER_007&layout=compact&theme=dark)
-![Wakatime](https://wakatime.com/badge/user/(your-wakatime-id).svg)
-```
+![GitHub Stats](https://github-readme-stats.vercel.app/api?username=SarvarSalimov007&show_icons=true&theme=dark&count_private=true)
 
----
-
-## ✉️ Aloqa
-
-- Email: exa_gamer_007@example.com  
-- Twitter/X: @EXA_GAMER_007  
-- LinkedIn: https://www.linkedin.com/in/exa-gamer-007
+![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=SarvarSalimov007&layout=compact&theme=dark)
 
 ---
 
-## 📜 License
+## 🔗 Havolalar
 
-Bu README shabloni MIT litsenziyasi ostida ochiq. O'zgartirish va qayta tarqatish mumkin.
+- 🌐 **Live Portfolio**: [sarvarsalimov.dev](https://sarvarsalimov.dev)
+- 💼 **GitHub**: [@SarvarSalimov007](https://github.com/SarvarSalimov007)
+- 💼 **LinkedIn**: [Sarvar Salimov](https://linkedin.com/in/sarvarsalimov)
+- 💬 **Telegram**: [@sarvarsalimov](https://t.me/sarvarsalimov)
+
+---
+
+## 📝 Lisensiya
+
+MIT License — O'zgartirish va qayta ishlatish mumkin.
+
+---
+
+## 💡 Yaxshilanishlar
+
+- ✅ SEO optimizatsiyasi
+- ✅ Form validatsiyasi
+- ✅ Accessibility (a11y)
+- ✅ Performance optimizatsiyasi
+- ✅ Responsive design
+- ✅ Dark/Light theme
+
+---
+
+<p align="center">
+  Made with ❤️ by Sarvar Salimov
+</p>
