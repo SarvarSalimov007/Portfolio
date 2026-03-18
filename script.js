@@ -1,7 +1,12 @@
+// ============================
+// SARVAR SALIMOV — Portfolio JS
+// Clean, Modern, Performance-first
+// ============================
+
 // Remove no-js class
 document.documentElement.classList.remove('no-js');
 
-// Smooth scroll for in-page links with offset for sticky header
+// ========== SMOOTH SCROLL ==========
 document.querySelectorAll('a[href^="#"]').forEach(link => {
   link.addEventListener('click', e => {
     const targetId = link.getAttribute('href');
@@ -9,67 +14,224 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
       const el = document.querySelector(targetId);
       if (el) {
         e.preventDefault();
-        const headerOffset = 80;
-        const elementPosition = el.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        const offset = 80;
+        const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
 
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
-        
-        // Close mobile menu if open
+        // Close mobile menu
         const menu = document.getElementById('nav-menu');
         if (menu?.classList.contains('open')) {
           menu.classList.remove('open');
-          const toggle = document.querySelector('.nav-toggle');
-          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+          document.querySelector('.nav-toggle')?.setAttribute('aria-expanded', 'false');
         }
       }
     }
   });
 });
 
-// Close mobile menu when clicking outside
+// ========== MOBILE NAV ==========
+const navToggle = document.querySelector('.nav-toggle');
+const navMenu = document.getElementById('nav-menu');
+if (navToggle && navMenu) {
+  navToggle.addEventListener('click', () => {
+    const open = navMenu.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', String(open));
+  });
+}
+// Close menu on outside click
 document.addEventListener('click', (e) => {
-  const menu = document.getElementById('nav-menu');
-  const toggle = document.querySelector('.nav-toggle');
-  if (menu && toggle && !menu.contains(e.target) && !toggle.contains(e.target) && menu.classList.contains('open')) {
-    menu.classList.remove('open');
-    toggle.setAttribute('aria-expanded', 'false');
+  if (navMenu && navToggle && !navMenu.contains(e.target) && !navToggle.contains(e.target) && navMenu.classList.contains('open')) {
+    navMenu.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
   }
 });
 
-// Mobile nav toggle
-const toggle = document.querySelector('.nav-toggle');
-const menu = document.getElementById('nav-menu');
-if (toggle && menu) {
-  toggle.addEventListener('click', () => {
-    const open = menu.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', String(open));
-  });
+// ========== HEADER SCROLL EFFECT ==========
+const header = document.getElementById('siteHeader');
+if (header) {
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    header.classList.toggle('scrolled', scrollY > 20);
+    lastScroll = scrollY;
+  }, { passive: true });
 }
 
-// Theme toggle (neon variants + light/dark)
+// ========== ACTIVE NAV LINK ==========
+const sections = document.querySelectorAll('.section[id]');
+const navLinks = document.querySelectorAll('.main-nav a[href^="#"]');
+const activateNav = () => {
+  const scrollY = window.scrollY + 120;
+  sections.forEach(section => {
+    const top = section.offsetTop;
+    const height = section.offsetHeight;
+    const id = section.getAttribute('id');
+    if (scrollY >= top && scrollY < top + height) {
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+      });
+    }
+  });
+};
+window.addEventListener('scroll', activateNav, { passive: true });
+
+// ========== THEME TOGGLE ==========
 const themeToggle = document.getElementById('themeToggle');
 if (themeToggle) {
+  // Check saved preference
+  const savedTheme = localStorage.getItem('portfolio-theme');
+  if (savedTheme === 'light') {
+    document.body.classList.add('light-theme');
+  }
+  updateThemeIcon();
+
   themeToggle.addEventListener('click', () => {
-    document.documentElement.classList.toggle('alt-theme');
     document.body.classList.toggle('light-theme');
     const isLight = document.body.classList.contains('light-theme');
-    themeToggle.textContent = isLight ? '☀️ Light' : '🌙 Dark';
+    localStorage.setItem('portfolio-theme', isLight ? 'light' : 'dark');
+    updateThemeIcon();
   });
-  // Boshlang'ich statusini yangilash
-  const initialIsLight = document.body.classList.contains('light-theme');
-  themeToggle.textContent = initialIsLight ? '☀️ Light' : '🌙 Dark';
 }
 
+function updateThemeIcon() {
+  if (!themeToggle) return;
+  const isLight = document.body.classList.contains('light-theme');
+  themeToggle.querySelector('.theme-icon').textContent = isLight ? '☀️' : '🌙';
+}
 
-// Footer year
+// ========== FOOTER YEAR ==========
 const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-// Form validation and submission
+// ========== TYPING EFFECT ==========
+(() => {
+  const el = document.getElementById('typingText');
+  if (!el) return;
+
+  const phrases = [
+    'Software Engineer',
+    'Full-Stack Developer',
+    'UI/UX Enthusiast',
+    'Problem Solver',
+    'React & Next.js',
+  ];
+
+  let phraseIdx = 0;
+  let charIdx = 0;
+  let deleting = false;
+  let pauseEnd = 0;
+
+  const tick = () => {
+    const now = Date.now();
+    if (now < pauseEnd) {
+      requestAnimationFrame(tick);
+      return;
+    }
+
+    const phrase = phrases[phraseIdx];
+
+    if (!deleting) {
+      charIdx++;
+      el.textContent = phrase.slice(0, charIdx);
+      if (charIdx === phrase.length) {
+        deleting = true;
+        pauseEnd = now + 2000;
+      }
+    } else {
+      charIdx--;
+      el.textContent = phrase.slice(0, charIdx);
+      if (charIdx === 0) {
+        deleting = false;
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        pauseEnd = now + 400;
+      }
+    }
+
+    const speed = deleting ? 35 : 80;
+    setTimeout(() => requestAnimationFrame(tick), speed);
+  };
+
+  requestAnimationFrame(tick);
+})();
+
+// ========== STATS COUNTER ==========
+(() => {
+  const counters = document.querySelectorAll('.stat-number[data-target]');
+  if (!counters.length) return;
+
+  const animateCounter = (el) => {
+    const target = parseInt(el.dataset.target, 10);
+    const duration = 2000;
+    const start = performance.now();
+
+    const update = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(target * eased);
+      if (progress < 1) requestAnimationFrame(update);
+    };
+
+    requestAnimationFrame(update);
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  counters.forEach(c => observer.observe(c));
+})();
+
+// ========== SKILL BARS ==========
+(() => {
+  const bars = document.querySelectorAll('.skill-fill[data-width]');
+  if (!bars.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.width = entry.target.dataset.width + '%';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  bars.forEach(b => observer.observe(b));
+})();
+
+// ========== SCROLL REVEAL ==========
+(() => {
+  const items = document.querySelectorAll(
+    '.section-header, .glass-card, .stat-item, .about-lead, .highlight-item, .tech-pill'
+  );
+  if (!items.length) return;
+
+  items.forEach(el => el.classList.add('reveal'));
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  // Stagger observation
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => items.forEach(el => observer.observe(el)));
+  } else {
+    setTimeout(() => items.forEach(el => observer.observe(el)), 100);
+  }
+})();
+
+// ========== FORM VALIDATION ==========
 (() => {
   const form = document.getElementById('contactForm');
   const submitBtn = document.getElementById('submitBtn');
@@ -82,56 +244,47 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     message: document.getElementById('message')
   };
 
-  // Validation rules
   const validators = {
-    name: (value) => {
-      if (!value.trim()) return 'Ism kiritishingiz shart';
-      if (value.trim().length < 2) return 'Ism kamida 2 belgidan iborat bo\'lishi kerak';
-      if (value.trim().length > 50) return 'Ism 50 belgidan oshmasligi kerak';
+    name: (v) => {
+      if (!v.trim()) return 'Ism kiritishingiz shart';
+      if (v.trim().length < 2) return 'Ism kamida 2 belgidan iborat bo\'lishi kerak';
+      if (v.trim().length > 50) return 'Ism 50 belgidan oshmasligi kerak';
       return null;
     },
-    email: (value) => {
-      if (!value.trim()) return 'Email kiritishingiz shart';
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) return 'To\'g\'ri email manzilini kiriting';
+    email: (v) => {
+      if (!v.trim()) return 'Email kiritishingiz shart';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return 'To\'g\'ri email manzilini kiriting';
       return null;
     },
-    message: (value) => {
-      if (!value.trim()) return 'Xabar kiritishingiz shart';
-      if (value.trim().length < 10) return 'Xabar kamida 10 belgidan iborat bo\'lishi kerak';
-      if (value.trim().length > 1000) return 'Xabar 1000 belgidan oshmasligi kerak';
+    message: (v) => {
+      if (!v.trim()) return 'Xabar kiritishingiz shart';
+      if (v.trim().length < 10) return 'Xabar kamida 10 belgidan iborat bo\'lishi kerak';
+      if (v.trim().length > 1000) return 'Xabar 1000 belgidan oshmasligi kerak';
       return null;
     }
   };
 
-  // Show error
-  function showError(fieldName, message) {
-    const field = fields[fieldName];
-    const errorEl = field?.parentElement?.querySelector('.error-message');
-    if (errorEl) {
-      errorEl.textContent = message || '';
-      field?.setAttribute('aria-invalid', message ? 'true' : 'false');
+  function showError(name, msg) {
+    const field = fields[name];
+    const errEl = field?.parentElement?.querySelector('.error-message');
+    if (errEl) {
+      errEl.textContent = msg || '';
+      field?.setAttribute('aria-invalid', msg ? 'true' : 'false');
     }
   }
 
-  // Validate field
-  function validateField(fieldName) {
-    const field = fields[fieldName];
+  function validateField(name) {
+    const field = fields[name];
     if (!field) return false;
-    const validator = validators[fieldName];
-    if (!validator) return true;
-    const error = validator(field.value);
-    showError(fieldName, error);
+    const error = validators[name]?.(field.value);
+    showError(name, error);
     return !error;
   }
 
-  // Validate all fields
-  function validateForm() {
-    let isValid = true;
-    Object.keys(fields).forEach(name => {
-      if (!validateField(name)) isValid = false;
-    });
-    return isValid;
+  function validateAll() {
+    let valid = true;
+    Object.keys(fields).forEach(n => { if (!validateField(n)) valid = false; });
+    return valid;
   }
 
   // Real-time validation
@@ -140,29 +293,13 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     if (field) {
       field.addEventListener('blur', () => validateField(name));
       field.addEventListener('input', () => {
-        if (field.hasAttribute('aria-invalid')) {
-          validateField(name);
-        }
+        if (field.hasAttribute('aria-invalid')) validateField(name);
       });
     }
   });
 
-  // Debounce function
-  function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  }
-
-  // Show status message
-  function showStatus(message, type = 'success') {
-    formStatus.textContent = message;
+  function showStatus(msg, type = 'success') {
+    formStatus.textContent = msg;
     formStatus.className = `form-status ${type}`;
     formStatus.setAttribute('role', 'alert');
     setTimeout(() => {
@@ -171,21 +308,19 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     }, 5000);
   }
 
-  // Form submission
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      showStatus('Iltimos, barcha xatolarni tuzattingiz', 'error');
-      const firstError = form.querySelector('[aria-invalid="true"]');
-      if (firstError) {
-        firstError.focus();
-        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    if (!validateAll()) {
+      showStatus('Iltimos, barcha maydonlarni to\'g\'ri to\'ldiring', 'error');
+      const firstErr = form.querySelector('[aria-invalid="true"]');
+      if (firstErr) {
+        firstErr.focus();
+        firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
       return;
     }
 
-    // Disable button and show loading
     submitBtn.disabled = true;
     submitBtn.classList.add('loading');
     formStatus.textContent = '';
@@ -193,27 +328,16 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     try {
       // Simulate API call (replace with actual endpoint)
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData);
-      
-      // TODO: Replace with actual API endpoint
-      // Example: const response = await fetch('/api/contact', { method: 'POST', body: JSON.stringify(data) });
-      // if (!response.ok) throw new Error('Network error');
-      
-      // Simulate API call for demo
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      showStatus('Xabar muvaffaqiyatli yuborildi! Tez orada sizga javob beraman. ✨', 'success');
+      showStatus('Xabar muvaffaqiyatli yuborildi! Tez orada javob beraman ✨', 'success');
       form.reset();
-      
-      // Clear all errors
-      Object.keys(fields).forEach(name => {
-        showError(name, '');
-        fields[name]?.removeAttribute('aria-invalid');
+      Object.keys(fields).forEach(n => {
+        showError(n, '');
+        fields[n]?.removeAttribute('aria-invalid');
       });
-    } catch (error) {
-      console.error('Form submission error:', error);
-      showStatus('Xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko\'ring.', 'error');
+    } catch (err) {
+      console.error('Form error:', err);
+      showStatus('Xatolik yuz berdi. Keyinroq qayta urinib ko\'ring.', 'error');
     } finally {
       submitBtn.disabled = false;
       submitBtn.classList.remove('loading');
@@ -221,69 +345,21 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   });
 })();
 
-// Performance: Debounce scroll handlers
-const debounce = (func, wait) => {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-};
-
-// Intersection Observer with performance optimization
-const observerOptions = {
-  threshold: 0.12,
-  rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.style.opacity = '0';
-      entry.target.style.transform = 'translateY(14px)';
-      entry.target.animate([
-        { opacity: 0, transform: 'translateY(14px)' },
-        { opacity: 1, transform: 'translateY(0px)' }
-      ], { 
-        duration: 600, 
-        easing: 'cubic-bezier(.2,.6,.2,1)', 
-        fill: 'forwards' 
-      });
-      observer.unobserve(entry.target);
-    }
-  });
-}, observerOptions);
-
-// Observe elements with requestIdleCallback for better performance
-if ('requestIdleCallback' in window) {
-  requestIdleCallback(() => {
-    document.querySelectorAll('.section .title, .skill-card, .project-card, .contact-form').forEach(el => {
-      observer.observe(el);
-    });
-  });
-} else {
-  setTimeout(() => {
-    document.querySelectorAll('.section .title, .skill-card, .project-card, .contact-form').forEach(el => {
-      observer.observe(el);
-    });
-  }, 100);
-}
-
-// === RGB Particle Trail + Click Burst ===
+// ========== PARTICLE EFFECT (Refined) ==========
 (() => {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const canvas = document.getElementById('fx-canvas');
   if (!canvas || prefersReduced) return;
-  const ctx = canvas.getContext('2d', { alpha: true });
 
-  let width = 0, height = 0, dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+  const ctx = canvas.getContext('2d', { alpha: true });
+  let width = 0, height = 0;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+
   const resize = () => {
-    width = canvas.clientWidth = window.innerWidth;
-    height = canvas.clientHeight = window.innerHeight;
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
     canvas.width = Math.floor(width * dpr);
     canvas.height = Math.floor(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -291,102 +367,83 @@ if ('requestIdleCallback' in window) {
   resize();
   window.addEventListener('resize', resize);
 
-  // Particle pool
-  const MAX_PARTICLES = 240; // hard cap
+  // Particles
+  const MAX = 180;
   const particles = [];
   const pool = [];
-  function makeParticle(x, y, vx, vy, life, size, hueBase) {
+  const rand = (a, b) => a + Math.random() * (b - a);
+  let hue = 0;
+
+  function spawn(x, y, vx, vy, life, size) {
     const p = pool.pop() || {};
-    p.x = x; p.y = y; p.vx = vx; p.vy = vy; p.life = life; p.max = life; p.size = size; p.hue = hueBase;
+    p.x = x; p.y = y; p.vx = vx; p.vy = vy;
+    p.life = life; p.max = life; p.size = size; p.hue = hue;
+    hue = (hue + 6) % 360;
     particles.push(p);
   }
 
-  let hueTicker = 0;
-  const rand = (a, b) => a + Math.random() * (b - a);
-
-  // Trail spawn (throttled for performance)
-  let mx = width * 0.5, my = height * 0.5, moved = false;
+  // Mouse trail
   let lastSpawn = 0;
-  const spawnTrail = (x, y, now) => {
-    if (now - lastSpawn < 16) return; // ~60fps max
+  window.addEventListener('pointermove', (e) => {
+    const now = performance.now();
+    if (now - lastSpawn < 18) return;
     lastSpawn = now;
-    const n = 3; // particles per frame when moving
-    for (let i = 0; i < n; i++) {
-      const angle = rand(0, Math.PI * 2);
-      const speed = rand(0.6, 2.2); // ~3x faster
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-      const size = rand(2, 3.2);
-      const life = rand(10, 18); // ~3x shorter
-      hueTicker += 8;
-      makeParticle(x, y, vx, vy, life, size, hueTicker);
+    for (let i = 0; i < 2; i++) {
+      const a = rand(0, Math.PI * 2);
+      const s = rand(0.4, 1.8);
+      spawn(e.clientX, e.clientY, Math.cos(a) * s, Math.sin(a) * s, rand(12, 22), rand(1.5, 3));
     }
-  };
+  }, { passive: true });
 
   // Click burst
-  const burst = (x, y) => {
-    const count = 28;
-    for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2 + rand(-0.12, 0.12);
-      const speed = rand(3.0, 6.0); // ~3x faster
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-      const size = rand(2.2, 3.8);
-      const life = rand(14, 24); // ~3x shorter
-      hueTicker += 10;
-      makeParticle(x, y, vx, vy, life, size, hueTicker);
-    }
-  };
-
-  // Events
-  const toCanvasCoords = (clientX, clientY) => {
-    const rect = canvas.getBoundingClientRect();
-    return { x: clientX - rect.left, y: clientY - rect.top };
-  };
-  window.addEventListener('pointermove', (e) => {
-    const pos = toCanvasCoords(e.clientX, e.clientY);
-    mx = pos.x; my = pos.y; moved = true;
-    spawnTrail(mx, my, performance.now());
-  }, { passive: true });
   window.addEventListener('pointerdown', (e) => {
-    const pos = toCanvasCoords(e.clientX, e.clientY);
-    burst(pos.x, pos.y);
+    for (let i = 0; i < 20; i++) {
+      const a = (i / 20) * Math.PI * 2 + rand(-0.15, 0.15);
+      const s = rand(2.5, 5);
+      spawn(e.clientX, e.clientY, Math.cos(a) * s, Math.sin(a) * s, rand(16, 28), rand(2, 3.5));
+    }
   }, { passive: true });
 
-  // Animation
+  // Render
   let lastTime = 0;
   const step = (t) => {
     if (document.hidden) { lastTime = t; requestAnimationFrame(step); return; }
     const dt = Math.min(33, t - lastTime || 16.7);
     lastTime = t;
 
-    // Fade trails without darkening background using destination-out
     ctx.globalCompositeOperation = 'destination-out';
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.18)'; // clear a bit stronger for faster fade
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
     ctx.fillRect(0, 0, width, height);
     ctx.globalCompositeOperation = 'lighter';
 
-    // Update & draw
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
-      p.life -= dt * 0.06; // time-based decay
-      if (p.life <= 0 || particles.length > MAX_PARTICLES) {
+      p.life -= dt * 0.055;
+      if (p.life <= 0 || particles.length > MAX) {
         pool.push(particles.splice(i, 1)[0]);
         continue;
       }
       p.x += p.vx;
       p.y += p.vy;
-      p.vx *= 0.982; p.vy *= 0.982; // slight drag
+      p.vx *= 0.985;
+      p.vy *= 0.985;
 
       const alpha = Math.max(0, p.life / p.max);
-      const size = p.size * (0.6 + 0.4 * alpha);
-      const hue = (p.hue % 360);
-      const color = `hsla(${hue}, 100%, 60%, ${0.24 + alpha * 0.40})`;
-      const glow = `hsla(${(hue + 40) % 360}, 100%, 55%, ${0.16 + alpha * 0.28})`;
+      const size = p.size * (0.5 + 0.5 * alpha);
 
-      // Outer glow
-      ctx.shadowBlur = 16; // simpler glow
-      ctx.shadowColor = glow;
+      // Use portfolio brand colors instead of pure rainbow
+      const h = p.hue;
+      let color;
+      if (h % 3 === 0) {
+        color = `rgba(108, 99, 255, ${0.2 + alpha * 0.5})`; // primary purple
+      } else if (h % 3 === 1) {
+        color = `rgba(0, 212, 170, ${0.2 + alpha * 0.5})`; // accent teal
+      } else {
+        color = `rgba(255, 107, 157, ${0.2 + alpha * 0.4})`; // warm pink
+      }
+
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = color;
       ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
@@ -397,7 +454,6 @@ if ('requestIdleCallback' in window) {
   };
   requestAnimationFrame(step);
 
-  // Pause on visibility change for battery/perf
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) lastTime = performance.now();
   });
