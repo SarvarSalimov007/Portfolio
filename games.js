@@ -1,6 +1,6 @@
 // ============================
 // SARVAR SALIMOV — Mini Games
-// 11 Browser Games with Premium UI
+// 12 Browser Games with Premium UI
 // ============================
 
 (() => {
@@ -39,6 +39,7 @@
       colormatch: { title: '🎨 Rang Topish', init: initColorMatch },
       spacewaves: { title: '🚀 Space Waves', init: initSpaceWaves },
       geodash: { title: '🔷 Geometry Dash', init: initGeoDash },
+      spacehockey: { title: '🏒 Space Hockey', init: initSpaceHockey },
     };
 
     const game = games[name];
@@ -1464,10 +1465,10 @@
   }
 
   // ============================================================
-  // 10. SPACE WAVES (Space Shooter)
+  // 10. SPACE WAVES (Geometry Dash Style - Wave Mode)
   // ============================================================
   function initSpaceWaves() {
-    const W = 360, H = 500;
+    const W = 400, H = 300;
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     canvas.className = 'game-canvas';
@@ -1478,248 +1479,173 @@
     wrap.appendChild(canvas);
     container.appendChild(wrap);
 
-    // Mobile controls
-    const mobileControls = document.createElement('div');
-    mobileControls.className = 'mobile-controls';
-    ['⬅', '🔫', '➡'].forEach((icon, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'mobile-btn';
-      btn.textContent = icon;
-      const actions = ['left', 'shoot', 'right'];
-      btn.addEventListener('touchstart', (e) => { e.preventDefault(); keys[actions[i]] = true; });
-      btn.addEventListener('touchend', () => { keys[actions[i]] = false; });
-      btn.addEventListener('mousedown', () => { keys[actions[i]] = true; });
-      btn.addEventListener('mouseup', () => { keys[actions[i]] = false; });
-      mobileControls.appendChild(btn);
-    });
-    container.appendChild(mobileControls);
-
     const ctx = canvas.getContext('2d');
-    let player = { x: W / 2, y: H - 50, w: 28, h: 28 };
-    let bullets = [];
-    let enemies = [];
-    let particles = [];
-    let stars = Array.from({ length: 40 }, () => ({
-      x: Math.random() * W, y: Math.random() * H,
-      s: Math.random() * 1.5 + 0.5, speed: Math.random() * 1.5 + 0.5
+    const GROUND_Y = H - 30, CEIL_Y = 30;
+    const PLAYER_SIZE = 12;
+    const FORWARD_SPEED = 4.5;
+    const VERTICAL_SPEED = 4.5;
+
+    let player = { x: 80, y: H / 2, vy: VERTICAL_SPEED, isUp: false };
+    let path = [{ x: player.x, y: player.y }];
+    let obstacles = [];
+    let bgStars = Array.from({ length: 30 }, () => ({
+      x: Math.random() * W, y: Math.random() * H, s: Math.random() * 2, speed: Math.random() * 0.5 + 0.5
     }));
     let score = 0;
-    let wave = 1;
+    let distance = 0;
     let gameOver = false;
-    let keys = { left: false, right: false, shoot: false };
-    let shootCooldown = 0;
     let animId;
-    let enemySpawnTimer = 0;
 
-    scoreEl.innerHTML = `Ball: <strong>0</strong> | To'lqin: <strong>1</strong>`;
+    scoreEl.innerHTML = 'Harakatlanish uchun bosing! ⚡';
 
-    function spawnWave() {
-      const count = 3 + wave * 2;
-      for (let i = 0; i < count; i++) {
-        enemies.push({
-          x: 20 + Math.random() * (W - 40),
-          y: -20 - Math.random() * 200,
-          w: 22, h: 22,
-          speed: 0.8 + wave * 0.2 + Math.random() * 0.5,
-          hp: wave > 3 ? 2 : 1,
-          color: wave > 3 ? '#FF6B9D' : '#FF4757'
-        });
-      }
+    function spawnObstacle() {
+      const h = 40 + Math.random() * 80;
+      const isTop = Math.random() > 0.5;
+      obstacles.push({
+        x: W + 50,
+        y: isTop ? CEIL_Y : GROUND_Y - h,
+        w: 30, h: h,
+        type: 'block'
+      });
     }
 
-    function addParticles(x, y, color, count) {
-      for (let i = 0; i < count; i++) {
-        particles.push({
-          x, y,
-          vx: (Math.random() - 0.5) * 5,
-          vy: (Math.random() - 0.5) * 5,
-          life: 20 + Math.random() * 15,
-          color, size: 2 + Math.random() * 3
-        });
-      }
+    function toggle(up) { player.isUp = up; }
+
+    canvas.addEventListener('mousedown', () => toggle(true));
+    canvas.addEventListener('mouseup', () => toggle(false));
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); toggle(true); }, { passive: false });
+    canvas.addEventListener('touchend', () => toggle(false));
+
+    function onKey(e) {
+      if (e.key === ' ' || e.key === 'ArrowUp') { e.preventDefault(); toggle(true); }
     }
+    function onKeyUp(e) {
+      if (e.key === ' ' || e.key === 'ArrowUp') toggle(false);
+    }
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('keyup', onKeyUp);
 
     function update() {
       if (gameOver) return;
 
-      // Player movement
-      if (keys.left && player.x > 14) player.x -= 5;
-      if (keys.right && player.x < W - 14) player.x += 5;
+      distance++;
+      score = Math.floor(distance / 10);
+      scoreEl.innerHTML = `Ball: <strong>${score}</strong>`;
 
-      // Shooting
-      if (shootCooldown > 0) shootCooldown--;
-      if (keys.shoot && shootCooldown <= 0) {
-        bullets.push({ x: player.x, y: player.y - 14, vy: -7 });
-        shootCooldown = 10;
+      // Player movement (Wave diagonal)
+      if (player.isUp) {
+        player.y -= VERTICAL_SPEED;
+      } else {
+        player.y += VERTICAL_SPEED;
       }
 
-      // Bullets
-      for (let i = bullets.length - 1; i >= 0; i--) {
-        bullets[i].y += bullets[i].vy;
-        if (bullets[i].y < -10) { bullets.splice(i, 1); continue; }
-
-        // Hit detection
-        for (let j = enemies.length - 1; j >= 0; j--) {
-          const e = enemies[j], b = bullets[i];
-          if (b && Math.abs(b.x - e.x) < (e.w / 2 + 4) && Math.abs(b.y - e.y) < (e.h / 2 + 4)) {
-            bullets.splice(i, 1);
-            e.hp--;
-            if (e.hp <= 0) {
-              addParticles(e.x, e.y, e.color, 8);
-              enemies.splice(j, 1);
-              score += 10 * wave;
-              scoreEl.innerHTML = `Ball: <strong>${score}</strong> | To'lqin: <strong>${wave}</strong>`;
-            }
-            break;
-          }
-        }
+      // Border bounds
+      if (player.y <= CEIL_Y || player.y >= GROUND_Y - PLAYER_SIZE) {
+        gameOver = true;
+        scoreEl.innerHTML = `💥 Portladi! Ball: <strong>${score}</strong>`;
       }
 
-      // Enemies
-      for (let i = enemies.length - 1; i >= 0; i--) {
-        enemies[i].y += enemies[i].speed;
-        // Hit player
-        if (Math.abs(enemies[i].x - player.x) < 20 && Math.abs(enemies[i].y - player.y) < 20) {
+      // Path tracking (for the zigzag line)
+      path.push({ x: player.x, y: player.y + PLAYER_SIZE / 2 });
+      if (path.length > 50) path.shift();
+      path.forEach(p => p.x -= FORWARD_SPEED);
+
+      // Obstacles
+      if (distance % 60 === 0) spawnObstacle();
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        obstacles[i].x -= FORWARD_SPEED;
+        if (obstacles[i].x < -50) { obstacles.splice(i, 1); continue; }
+
+        // Collision
+        const o = obstacles[i];
+        if (player.x + PLAYER_SIZE > o.x && player.x < o.x + o.w &&
+            player.y + PLAYER_SIZE > o.y && player.y < o.y + o.h) {
           gameOver = true;
-          addParticles(player.x, player.y, '#6C63FF', 20);
-          scoreEl.innerHTML = `💥 O'yin tugadi! Ball: <strong>${score}</strong> | To'lqin: <strong>${wave}</strong>`;
-          return;
+          scoreEl.innerHTML = `💥 To'siq! Ball: <strong>${score}</strong>`;
         }
-        // Off screen
-        if (enemies[i].y > H + 20) {
-          enemies.splice(i, 1);
-        }
-      }
-
-      // Spawn new wave
-      if (enemies.length === 0) {
-        wave++;
-        scoreEl.innerHTML = `Ball: <strong>${score}</strong> | To'lqin: <strong>${wave}</strong>`;
-        spawnWave();
-      }
-
-      // Particles
-      for (let i = particles.length - 1; i >= 0; i--) {
-        particles[i].x += particles[i].vx;
-        particles[i].y += particles[i].vy;
-        particles[i].life--;
-        if (particles[i].life <= 0) particles.splice(i, 1);
       }
 
       // Stars
-      stars.forEach(s => {
-        s.y += s.speed;
-        if (s.y > H) { s.y = 0; s.x = Math.random() * W; }
+      bgStars.forEach(s => {
+        s.x -= s.speed + (FORWARD_SPEED * 0.2);
+        if (s.x < -10) s.x = W + 10;
       });
     }
 
     function draw() {
-      // Background
-      const bg = ctx.createLinearGradient(0, 0, 0, H);
-      bg.addColorStop(0, '#05060f');
-      bg.addColorStop(1, '#0a0e1a');
-      ctx.fillStyle = bg;
+      // BG
+      ctx.fillStyle = '#05060f';
       ctx.fillRect(0, 0, W, H);
 
       // Stars
-      stars.forEach(s => {
-        ctx.fillStyle = `rgba(255,255,255,${0.3 + s.s * 0.3})`;
+      bgStars.forEach(s => {
+        ctx.fillStyle = `rgba(255,255,255,${0.3 + s.s * 0.2})`;
         ctx.fillRect(s.x, s.y, s.s, s.s);
       });
 
-      // Player (spaceship)
-      if (!gameOver) {
-        ctx.save();
-        ctx.translate(player.x, player.y);
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = '#6C63FF';
-        ctx.fillStyle = '#6C63FF';
-        ctx.beginPath();
-        ctx.moveTo(0, -14);
-        ctx.lineTo(-12, 12);
-        ctx.lineTo(-4, 8);
-        ctx.lineTo(0, 14);
-        ctx.lineTo(4, 8);
-        ctx.lineTo(12, 12);
-        ctx.closePath();
-        ctx.fill();
-        // Engine glow
+      // Borders
+      ctx.fillStyle = '#1a1f3a';
+      ctx.fillRect(0, 0, W, CEIL_Y);
+      ctx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#00D4AA';
+      ctx.fillStyle = '#00D4AA';
+      ctx.fillRect(0, CEIL_Y - 2, W, 2);
+      ctx.fillRect(0, GROUND_Y, W, 2);
+      ctx.shadowBlur = 0;
+
+      // Obstacles
+      obstacles.forEach(o => {
+        ctx.fillStyle = '#FF6B9D';
         ctx.shadowBlur = 8;
-        ctx.shadowColor = '#00D4AA';
-        ctx.fillStyle = '#00D4AA';
-        ctx.beginPath();
-        ctx.moveTo(-4, 10);
-        ctx.lineTo(0, 18 + Math.random() * 4);
-        ctx.lineTo(4, 10);
-        ctx.closePath();
-        ctx.fill();
+        ctx.shadowColor = '#FF6B9D';
+        ctx.fillRect(o.x, o.y, o.w, o.h);
         ctx.shadowBlur = 0;
-        ctx.restore();
+        // Inner detail
+        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+        ctx.strokeRect(o.x + 4, o.y + 4, o.w - 8, o.h - 8);
+      });
+
+      // Zigzag path
+      if (path.length > 1) {
+        ctx.beginPath();
+        ctx.strokeStyle = '#6C63FF';
+        ctx.lineWidth = 3;
+        ctx.moveTo(path[0].x, path[0].y);
+        for (let i = 1; i < path.length; i++) {
+          ctx.lineTo(path[i].x, path[i].y);
+        }
+        ctx.stroke();
       }
 
-      // Bullets
-      bullets.forEach(b => {
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = '#00D4AA';
-        ctx.fillStyle = '#00D4AA';
-        ctx.fillRect(b.x - 1.5, b.y, 3, 10);
-        ctx.shadowBlur = 0;
-      });
-
-      // Enemies
-      enemies.forEach(e => {
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = e.color;
-        ctx.fillStyle = e.color;
-        ctx.save();
-        ctx.translate(e.x, e.y);
-        ctx.beginPath();
-        ctx.moveTo(0, -e.h / 2);
-        ctx.lineTo(e.w / 2, 0);
-        ctx.lineTo(e.w / 4, e.h / 2);
-        ctx.lineTo(-e.w / 4, e.h / 2);
-        ctx.lineTo(-e.w / 2, 0);
-        ctx.closePath();
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.restore();
-      });
-
-      // Particles
-      particles.forEach(p => {
-        ctx.globalAlpha = p.life / 35;
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
-      });
-      ctx.globalAlpha = 1;
+      // Player (Triangle)
+      ctx.save();
+      ctx.translate(player.x, player.y + PLAYER_SIZE / 2);
+      const angle = player.isUp ? -Math.PI / 4 : Math.PI / 4;
+      ctx.rotate(angle);
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = '#6C63FF';
+      ctx.fillStyle = '#6C63FF';
+      ctx.beginPath();
+      ctx.moveTo(PLAYER_SIZE, 0);
+      ctx.lineTo(-PLAYER_SIZE / 2, -PLAYER_SIZE / 2);
+      ctx.lineTo(-PLAYER_SIZE / 2, PLAYER_SIZE / 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.restore();
     }
 
     function loop() {
       update();
       draw();
       if (!gameOver) animId = requestAnimationFrame(loop);
-      else { draw(); }
     }
-
-    function onKeyDown(e) {
-      if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = true;
-      if (e.key === 'ArrowRight' || e.key === 'd') keys.right = true;
-      if (e.key === ' ' || e.key === 'ArrowUp') { keys.shoot = true; e.preventDefault(); }
-    }
-    function onKeyUp(e) {
-      if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = false;
-      if (e.key === 'ArrowRight' || e.key === 'd') keys.right = false;
-      if (e.key === ' ' || e.key === 'ArrowUp') keys.shoot = false;
-    }
-
-    document.addEventListener('keydown', onKeyDown);
-    document.addEventListener('keyup', onKeyUp);
-    spawnWave();
     animId = requestAnimationFrame(loop);
 
     return () => {
       cancelAnimationFrame(animId);
-      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('keydown', onKey);
       document.removeEventListener('keyup', onKeyUp);
     };
   }
@@ -1996,6 +1922,148 @@
       cancelAnimationFrame(animId);
       document.removeEventListener('keydown', onKey);
     };
+  }
+
+  // ============================================================
+  // 12. SPACE HOCKEY
+  // ============================================================
+  function initSpaceHockey() {
+    const W = 400, H = 500;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    canvas.className = 'game-canvas';
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+
+    container.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    const PADDLE_R = 30, PUCK_R = 15;
+    const GOAL_W = 140;
+
+    let player = { x: W / 2, y: H - 80 };
+    let ai = { x: W / 2, y: 80 };
+    let puck = { x: W / 2, y: H / 2, vx: 0, vy: 0 };
+    let playerScore = 0, aiScore = 0;
+    let animId;
+
+    scoreEl.innerHTML = `Siz: <strong>0</strong> — Kompyuter: <strong>0</strong>`;
+
+    function resetPuck(toAI) {
+      puck.x = W / 2;
+      puck.y = toAI ? H / 2 - 50 : H / 2 + 50;
+      puck.vx = 0; puck.vy = 0;
+    }
+
+    function update() {
+      // AI Logic
+      const targetSpeed = 4.5 + Math.min((playerScore + aiScore) * 0.2, 3);
+      if (puck.y < H / 2) {
+        const dx = puck.x - ai.x;
+        const dy = puck.y - ai.y;
+        ai.x += Math.sign(dx) * Math.min(targetSpeed, Math.abs(dx));
+        ai.y += Math.sign(dy - 40) * Math.min(targetSpeed, Math.abs(dy - 40));
+      } else {
+        // Return to home position
+        const dx = W / 2 - ai.x;
+        const dy = 80 - ai.y;
+        ai.x += Math.sign(dx) * 3;
+        ai.y += Math.sign(dy) * 3;
+      }
+      // Ai bounds
+      ai.x = Math.max(PADDLE_R, Math.min(W - PADDLE_R, ai.x));
+      ai.y = Math.max(PADDLE_R, Math.min(H / 2 - PADDLE_R, ai.y));
+
+      // Puck Physics
+      puck.x += puck.vx;
+      puck.y += puck.vy;
+      puck.vx *= 0.985; // Friction
+      puck.vy *= 0.985;
+
+      // Wall Bounce
+      if (puck.x < PUCK_R) { puck.x = PUCK_R; puck.vx *= -0.8; }
+      if (puck.x > W - PUCK_R) { puck.x = W - PUCK_R; puck.vx *= -0.8; }
+
+      // Goals
+      if (Math.abs(puck.x - W / 2) < GOAL_W / 2) {
+        if (puck.y < 0) {
+          playerScore++; resetPuck(true);
+          scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> — Kompyuter: <strong>${aiScore}</strong>`;
+        } else if (puck.y > H) {
+          aiScore++; resetPuck(false);
+          scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> — Kompyuter: <strong>${aiScore}</strong>`;
+        }
+      } else {
+        if (puck.y < PUCK_R) { puck.y = PUCK_R; puck.vy *= -0.8; }
+        if (puck.y > H - PUCK_R) { puck.y = H - PUCK_R; puck.vy *= -0.8; }
+      }
+
+      // Check Paddle Collisions
+      [player, ai].forEach(p => {
+        const dx = puck.x - p.x;
+        const dy = puck.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < PADDLE_R + PUCK_R) {
+          const angle = Math.atan2(dy, dx);
+          const force = 12;
+          puck.vx = Math.cos(angle) * force;
+          puck.vy = Math.sin(angle) * force;
+          // Prevent sticking
+          puck.x = p.x + (PADDLE_R + PUCK_R + 1) * Math.cos(angle);
+          puck.y = p.y + (PADDLE_R + PUCK_R + 1) * Math.sin(angle);
+        }
+      });
+    }
+
+    function draw() {
+      // Field
+      ctx.fillStyle = '#05060f';
+      ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(W / 2, H / 2, 60, 0, Math.PI * 2); ctx.stroke();
+
+      // Goal Areas
+      ctx.strokeStyle = '#00D4AA';
+      ctx.strokeRect(W / 2 - GOAL_W / 2, -10, GOAL_W, 20);
+      ctx.strokeStyle = '#6C63FF';
+      ctx.strokeRect(W / 2 - GOAL_W / 2, H - 10, GOAL_W, 20);
+
+      // Paddles
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = '#6C63FF';
+      ctx.fillStyle = '#6C63FF';
+      ctx.beginPath(); ctx.arc(player.x, player.y, PADDLE_R, 0, Math.PI * 2); ctx.fill();
+
+      ctx.shadowColor = '#FF6B9D';
+      ctx.fillStyle = '#FF6B9D';
+      ctx.beginPath(); ctx.arc(ai.x, ai.y, PADDLE_R, 0, Math.PI * 2); ctx.fill();
+
+      // Puck
+      ctx.shadowColor = '#fff';
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(puck.x, puck.y, PUCK_R, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    function movePlayer(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      player.x = (clientX - rect.left) * (W / rect.width);
+      player.y = (clientY - rect.top) * (H / rect.height);
+      // Bound
+      player.x = Math.max(PADDLE_R, Math.min(W - PADDLE_R, player.x));
+      player.y = Math.max(H / 2 + PADDLE_R, Math.min(H - PADDLE_R, player.y));
+    }
+
+    canvas.addEventListener('mousemove', movePlayer);
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); movePlayer(e); }, { passive: false });
+
+    function loop() { update(); draw(); animId = requestAnimationFrame(loop); }
+    animId = requestAnimationFrame(loop);
+
+    return () => cancelAnimationFrame(animId);
   }
 
 })();
