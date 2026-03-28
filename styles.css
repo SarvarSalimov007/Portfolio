@@ -1388,12 +1388,177 @@ body::before {
   color: var(--accent);
 }
 
-/* Game Canvas (snake, flappy) */
+/* Game Canvas (snake, flappy, pong) */
 .game-canvas {
   border-radius: var(--radius-md);
   border: 2px solid var(--border);
   box-shadow: 0 0 30px rgba(108,99,255,0.1);
   display: block;
+}
+
+/* ========== MINESWEEPER ========== */
+.mine-info {
+  text-align: center;
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  font-family: var(--font-display);
+}
+.mine-info strong { color: var(--accent); }
+.mine-board {
+  display: grid;
+  gap: 3px;
+  width: fit-content;
+  margin: 0 auto;
+}
+.mine-cell {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-display);
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.15s ease;
+  padding: 0;
+}
+.mine-cell:hover:not(.revealed) {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  transform: scale(1.08);
+  box-shadow: var(--shadow-glow);
+}
+.mine-cell.revealed {
+  background: rgba(255,255,255,0.03);
+  cursor: default;
+  border-color: rgba(255,255,255,0.05);
+}
+.mine-cell.flagged {
+  background: rgba(108,99,255,0.1);
+  border-color: rgba(108,99,255,0.3);
+}
+.mine-cell.mine-hit {
+  background: rgba(255,75,75,0.25) !important;
+  border-color: rgba(255,75,75,0.5) !important;
+  animation: mineExplode 0.4s ease;
+}
+.mine-cell.mine-show {
+  animation: mineReveal 0.3s ease;
+}
+@keyframes mineExplode {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+@keyframes mineReveal {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+.mine-cell[data-num="1"] { color: #3B82F6; }
+.mine-cell[data-num="2"] { color: #22C55E; }
+.mine-cell[data-num="3"] { color: #EF4444; }
+.mine-cell[data-num="4"] { color: #8B5CF6; }
+.mine-cell[data-num="5"] { color: #F59E0B; }
+.mine-cell[data-num="6"] { color: #06B6D4; }
+.mine-cell[data-num="7"] { color: #EC4899; }
+.mine-cell[data-num="8"] { color: #94A3B8; }
+.mine-hint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  margin-top: 14px;
+}
+
+/* ========== COLOR MATCH ========== */
+.color-match-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+.cm-timer-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.cm-timer-fill {
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 1s linear, background 0.5s ease;
+}
+.cm-instruction {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+.cm-color-display {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  border: 3px solid rgba(255,255,255,0.1);
+}
+.cm-color-display.cm-correct {
+  animation: cmCorrect 0.3s ease;
+}
+.cm-color-display.cm-wrong {
+  animation: cmWrong 0.3s ease;
+}
+@keyframes cmCorrect {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); border-color: rgba(0,212,170,0.6); }
+  100% { transform: scale(1); }
+}
+@keyframes cmWrong {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-12px); }
+  50% { transform: translateX(12px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+.cm-name {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  transition: color 0.2s ease;
+}
+.cm-streak {
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFA502;
+  min-height: 24px;
+  font-family: var(--font-display);
+}
+.cm-buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+.cm-btn {
+  padding: 14px 36px !important;
+  font-size: 16px !important;
+  font-weight: 700;
+  border-radius: 999px;
+  min-width: 120px;
+}
+.cm-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 /* Game Over Overlay */

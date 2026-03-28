@@ -1,6 +1,6 @@
 // ============================
 // SARVAR SALIMOV — Mini Games
-// 6 Browser Games with Premium UI
+// 9 Browser Games with Premium UI
 // ============================
 
 (() => {
@@ -34,6 +34,11 @@
       flappy: { title: '🐦 Flappy Bird', init: initFlappy },
       game2048: { title: '🔢 2048', init: init2048 },
       tetris: { title: '🧱 Tetris', init: initTetris },
+      pong: { title: '🏓 Pong', init: initPong },
+      minesweeper: { title: '💣 Minesweeper', init: initMinesweeper },
+      colormatch: { title: '🎨 Rang Topish', init: initColorMatch },
+      spacewaves: { title: '🚀 Space Waves', init: initSpaceWaves },
+      geodash: { title: '🔷 Geometry Dash', init: initGeoDash },
     };
 
     const game = games[name];
@@ -950,6 +955,512 @@
     dropInterval = setInterval(drop, dropSpeed);
 
     return () => { clearInterval(dropInterval); document.removeEventListener('keydown', onKey); };
+  }
+
+  // ============================================================
+  // 7. PONG (vs AI)
+  // ============================================================
+  function initPong() {
+    const W = 400, H = 300;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    canvas.className = 'game-canvas';
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+
+    const wrap = document.createElement('div');
+    wrap.style.position = 'relative';
+    wrap.appendChild(canvas);
+    container.appendChild(wrap);
+
+    // Mobile controls
+    const mobileControls = document.createElement('div');
+    mobileControls.className = 'mobile-controls';
+    ['⬆', '⬇'].forEach((icon, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'mobile-btn';
+      btn.textContent = icon;
+      btn.addEventListener('touchstart', (e) => { e.preventDefault(); keys[i === 0 ? 'up' : 'down'] = true; });
+      btn.addEventListener('touchend', () => { keys[i === 0 ? 'up' : 'down'] = false; });
+      btn.addEventListener('mousedown', () => { keys[i === 0 ? 'up' : 'down'] = true; });
+      btn.addEventListener('mouseup', () => { keys[i === 0 ? 'up' : 'down'] = false; });
+      mobileControls.appendChild(btn);
+    });
+    container.appendChild(mobileControls);
+
+    const ctx = canvas.getContext('2d');
+    const PADDLE_W = 10, PADDLE_H = 60, BALL_R = 7;
+    const PLAYER_SPEED = 5, AI_SPEED = 3.5;
+
+    let player = { y: H / 2 - PADDLE_H / 2 };
+    let ai = { y: H / 2 - PADDLE_H / 2 };
+    let ball = { x: W / 2, y: H / 2, vx: 3.5, vy: 2 };
+    let playerScore = 0, aiScore = 0;
+    let keys = { up: false, down: false };
+    let animId;
+
+    scoreEl.innerHTML = 'Siz: <strong>0</strong> — Kompyuter: <strong>0</strong>';
+
+    function resetBall(dir) {
+      ball.x = W / 2;
+      ball.y = H / 2;
+      const angle = (Math.random() * 0.8 - 0.4);
+      const speed = 3.5 + Math.min(playerScore + aiScore, 10) * 0.15;
+      ball.vx = dir * speed * Math.cos(angle);
+      ball.vy = speed * Math.sin(angle);
+    }
+
+    function update() {
+      // Player movement
+      if (keys.up && player.y > 0) player.y -= PLAYER_SPEED;
+      if (keys.down && player.y < H - PADDLE_H) player.y += PLAYER_SPEED;
+
+      // AI movement
+      const aiCenter = ai.y + PADDLE_H / 2;
+      const diff = ball.y - aiCenter;
+      if (Math.abs(diff) > 5) {
+        ai.y += Math.sign(diff) * Math.min(AI_SPEED, Math.abs(diff));
+      }
+      ai.y = Math.max(0, Math.min(H - PADDLE_H, ai.y));
+
+      // Ball movement
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+
+      // Top/bottom bounce
+      if (ball.y - BALL_R <= 0 || ball.y + BALL_R >= H) {
+        ball.vy = -ball.vy;
+        ball.y = ball.y - BALL_R <= 0 ? BALL_R : H - BALL_R;
+      }
+
+      // Player paddle collision
+      if (ball.x - BALL_R <= 20 + PADDLE_W && ball.x + BALL_R >= 20 &&
+          ball.y >= player.y && ball.y <= player.y + PADDLE_H && ball.vx < 0) {
+        ball.vx = -ball.vx * 1.05;
+        const hitPos = (ball.y - player.y) / PADDLE_H - 0.5;
+        ball.vy = hitPos * 6;
+        ball.x = 20 + PADDLE_W + BALL_R;
+      }
+
+      // AI paddle collision
+      if (ball.x + BALL_R >= W - 20 - PADDLE_W && ball.x - BALL_R <= W - 20 &&
+          ball.y >= ai.y && ball.y <= ai.y + PADDLE_H && ball.vx > 0) {
+        ball.vx = -ball.vx * 1.05;
+        const hitPos = (ball.y - ai.y) / PADDLE_H - 0.5;
+        ball.vy = hitPos * 6;
+        ball.x = W - 20 - PADDLE_W - BALL_R;
+      }
+
+      // Scoring
+      if (ball.x < 0) {
+        aiScore++;
+        scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> — Kompyuter: <strong>${aiScore}</strong>`;
+        if (aiScore >= 7) {
+          scoreEl.innerHTML = `😅 Kompyuter yutdi! ${playerScore} : ${aiScore}`;
+          cancelAnimationFrame(animId); return;
+        }
+        resetBall(1);
+      }
+      if (ball.x > W) {
+        playerScore++;
+        scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> — Kompyuter: <strong>${aiScore}</strong>`;
+        if (playerScore >= 7) {
+          scoreEl.innerHTML = `🎉 Siz yutdingiz! ${playerScore} : ${aiScore}`;
+          cancelAnimationFrame(animId); return;
+        }
+        resetBall(-1);
+      }
+    }
+
+    function draw() {
+      // Background
+      ctx.fillStyle = '#0a0e1a';
+      ctx.fillRect(0, 0, W, H);
+
+      // Center line
+      ctx.setLineDash([6, 6]);
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(W / 2, 0);
+      ctx.lineTo(W / 2, H);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Scores in background
+      ctx.fillStyle = 'rgba(255,255,255,0.06)';
+      ctx.font = 'bold 64px "Space Grotesk", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(playerScore, W / 4, 80);
+      ctx.fillText(aiScore, 3 * W / 4, 80);
+
+      // Player paddle
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = '#6C63FF';
+      ctx.fillStyle = '#6C63FF';
+      ctx.fillRect(20, player.y, PADDLE_W, PADDLE_H);
+      ctx.shadowBlur = 0;
+
+      // AI paddle
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = '#FF6B9D';
+      ctx.fillStyle = '#FF6B9D';
+      ctx.fillRect(W - 20 - PADDLE_W, ai.y, PADDLE_W, PADDLE_H);
+      ctx.shadowBlur = 0;
+
+      // Ball
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = '#00D4AA';
+      ctx.fillStyle = '#00D4AA';
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    function loop() {
+      update();
+      draw();
+      animId = requestAnimationFrame(loop);
+    }
+
+    function onKey(e) {
+      if (e.key === 'ArrowUp' || e.key === 'w') { keys.up = e.type === 'keydown'; e.preventDefault(); }
+      if (e.key === 'ArrowDown' || e.key === 's') { keys.down = e.type === 'keydown'; e.preventDefault(); }
+    }
+
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('keyup', onKey);
+    animId = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('keyup', onKey);
+    };
+  }
+
+  // ============================================================
+  // 8. MINESWEEPER
+  // ============================================================
+  function initMinesweeper() {
+    const ROWS = 10, COLS = 10, MINES = 15;
+    let grid = [];
+    let revealed = [];
+    let flagged = [];
+    let gameOver = false;
+    let won = false;
+    let firstClick = true;
+    let flagCount = 0;
+
+    const wrapper = document.createElement('div');
+
+    const infoBar = document.createElement('div');
+    infoBar.className = 'mine-info';
+    infoBar.innerHTML = `💣 <strong>${MINES}</strong> ta mina | 🚩 <span id="mFlagCount">0</span> / ${MINES}`;
+    wrapper.appendChild(infoBar);
+
+    const boardEl = document.createElement('div');
+    boardEl.className = 'mine-board';
+    boardEl.style.gridTemplateColumns = `repeat(${COLS}, 1fr)`;
+    wrapper.appendChild(boardEl);
+
+    const hint = document.createElement('p');
+    hint.className = 'mine-hint';
+    hint.textContent = '💡 O\'ng klik = bayroq qo\'yish | Chapni bosing = ochish';
+    wrapper.appendChild(hint);
+
+    container.appendChild(wrapper);
+
+    const cellEls = [];
+
+    // Initialize empty grid
+    for (let r = 0; r < ROWS; r++) {
+      grid[r] = [];
+      revealed[r] = [];
+      flagged[r] = [];
+      cellEls[r] = [];
+      for (let c = 0; c < COLS; c++) {
+        grid[r][c] = 0;
+        revealed[r][c] = false;
+        flagged[r][c] = false;
+
+        const cell = document.createElement('button');
+        cell.className = 'mine-cell';
+        cell.addEventListener('click', () => reveal(r, c));
+        cell.addEventListener('contextmenu', (e) => { e.preventDefault(); toggleFlag(r, c); });
+
+        // Long press for mobile flag
+        let pressTimer;
+        cell.addEventListener('touchstart', (e) => {
+          pressTimer = setTimeout(() => { e.preventDefault(); toggleFlag(r, c); }, 400);
+        }, { passive: false });
+        cell.addEventListener('touchend', () => clearTimeout(pressTimer));
+        cell.addEventListener('touchmove', () => clearTimeout(pressTimer));
+
+        boardEl.appendChild(cell);
+        cellEls[r][c] = cell;
+      }
+    }
+
+    scoreEl.innerHTML = 'Minalarni toping! 💣';
+
+    function placeMines(safeR, safeC) {
+      let placed = 0;
+      while (placed < MINES) {
+        const r = Math.floor(Math.random() * ROWS);
+        const c = Math.floor(Math.random() * COLS);
+        if (grid[r][c] === -1) continue;
+        if (Math.abs(r - safeR) <= 1 && Math.abs(c - safeC) <= 1) continue;
+        grid[r][c] = -1;
+        placed++;
+      }
+      // Calculate numbers
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (grid[r][c] === -1) continue;
+          let count = 0;
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              const nr = r + dr, nc = c + dc;
+              if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && grid[nr][nc] === -1) count++;
+            }
+          }
+          grid[r][c] = count;
+        }
+      }
+    }
+
+    function reveal(r, c) {
+      if (gameOver || won || flagged[r][c] || revealed[r][c]) return;
+
+      if (firstClick) {
+        firstClick = false;
+        placeMines(r, c);
+      }
+
+      revealed[r][c] = true;
+      const cell = cellEls[r][c];
+      cell.classList.add('revealed');
+
+      if (grid[r][c] === -1) {
+        // Hit mine
+        gameOver = true;
+        cell.classList.add('mine-hit');
+        cell.textContent = '💥';
+        revealAll();
+        scoreEl.innerHTML = '💥 Mina portladi! O\'yin tugadi.';
+        return;
+      }
+
+      const val = grid[r][c];
+      if (val > 0) {
+        cell.textContent = val;
+        cell.setAttribute('data-num', val);
+      } else {
+        // Flood fill for empty cells
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            const nr = r + dr, nc = c + dc;
+            if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+              reveal(nr, nc);
+            }
+          }
+        }
+      }
+
+      checkWin();
+    }
+
+    function toggleFlag(r, c) {
+      if (gameOver || won || revealed[r][c]) return;
+      flagged[r][c] = !flagged[r][c];
+      cellEls[r][c].textContent = flagged[r][c] ? '🚩' : '';
+      cellEls[r][c].classList.toggle('flagged', flagged[r][c]);
+      flagCount += flagged[r][c] ? 1 : -1;
+      const el = document.getElementById('mFlagCount');
+      if (el) el.textContent = flagCount;
+    }
+
+    function checkWin() {
+      let unrevealedSafe = 0;
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (!revealed[r][c] && grid[r][c] !== -1) unrevealedSafe++;
+        }
+      }
+      if (unrevealedSafe === 0) {
+        won = true;
+        scoreEl.innerHTML = '🎉 Tabriklaymiz! Barcha minalarni topdingiz!';
+      }
+    }
+
+    function revealAll() {
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (grid[r][c] === -1 && !revealed[r][c]) {
+            cellEls[r][c].textContent = '💣';
+            cellEls[r][c].classList.add('revealed', 'mine-show');
+          }
+        }
+      }
+    }
+  }
+
+  // ============================================================
+  // 9. COLOR MATCH (Reaction Game)
+  // ============================================================
+  function initColorMatch() {
+    const COLORS = [
+      { name: 'Qizil', hex: '#FF4757' },
+      { name: 'Ko\'k', hex: '#3742FA' },
+      { name: 'Yashil', hex: '#2ED573' },
+      { name: 'Sariq', hex: '#FFA502' },
+      { name: 'Pushti', hex: '#FF6B9D' },
+      { name: 'Binafsha', hex: '#6C63FF' },
+      { name: 'Zangori', hex: '#00D4AA' },
+      { name: 'To\'q sariq', hex: '#FF6348' },
+    ];
+
+    let score = 0;
+    let timeLeft = 30;
+    let currentColor = null;
+    let displayedName = '';
+    let isMatch = false;
+    let gameActive = true;
+    let timer = null;
+    let streak = 0;
+    let bestStreak = 0;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'color-match-wrapper';
+
+    const timerBar = document.createElement('div');
+    timerBar.className = 'cm-timer-bar';
+    const timerFill = document.createElement('div');
+    timerFill.className = 'cm-timer-fill';
+    timerBar.appendChild(timerFill);
+    wrapper.appendChild(timerBar);
+
+    const instruction = document.createElement('p');
+    instruction.className = 'cm-instruction';
+    instruction.textContent = 'Rang nomi va ko\'rsatilgan rang mos keladimi?';
+    wrapper.appendChild(instruction);
+
+    const colorDisplay = document.createElement('div');
+    colorDisplay.className = 'cm-color-display';
+    wrapper.appendChild(colorDisplay);
+
+    const nameDisplay = document.createElement('div');
+    nameDisplay.className = 'cm-name';
+    wrapper.appendChild(nameDisplay);
+
+    const streakDisplay = document.createElement('div');
+    streakDisplay.className = 'cm-streak';
+    wrapper.appendChild(streakDisplay);
+
+    const btnWrap = document.createElement('div');
+    btnWrap.className = 'cm-buttons';
+
+    const yesBtn = document.createElement('button');
+    yesBtn.className = 'btn btn-primary cm-btn cm-yes';
+    yesBtn.textContent = '✅ Ha';
+    yesBtn.addEventListener('click', () => answer(true));
+
+    const noBtn = document.createElement('button');
+    noBtn.className = 'btn btn-outline cm-btn cm-no';
+    noBtn.textContent = '❌ Yo\'q';
+    noBtn.addEventListener('click', () => answer(false));
+
+    btnWrap.appendChild(yesBtn);
+    btnWrap.appendChild(noBtn);
+    wrapper.appendChild(btnWrap);
+
+    container.appendChild(wrapper);
+    scoreEl.innerHTML = 'Ball: <strong>0</strong> | ⏱ <strong>30</strong>s';
+
+    function nextRound() {
+      if (!gameActive) return;
+      const actualColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+      currentColor = actualColor;
+
+      // 50% chance the name matches the shown color
+      if (Math.random() < 0.5) {
+        displayedName = actualColor.name;
+        isMatch = true;
+      } else {
+        let wrongColor;
+        do {
+          wrongColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+        } while (wrongColor.name === actualColor.name);
+        displayedName = wrongColor.name;
+        isMatch = false;
+      }
+
+      colorDisplay.style.background = actualColor.hex;
+      colorDisplay.style.boxShadow = `0 0 30px ${actualColor.hex}40`;
+      nameDisplay.textContent = displayedName;
+      nameDisplay.style.color = COLORS[Math.floor(Math.random() * COLORS.length)].hex;
+    }
+
+    function answer(playerSaidYes) {
+      if (!gameActive) return;
+      const correct = playerSaidYes === isMatch;
+
+      if (correct) {
+        score += 10 + streak * 2;
+        streak++;
+        bestStreak = Math.max(bestStreak, streak);
+        colorDisplay.classList.add('cm-correct');
+        setTimeout(() => colorDisplay.classList.remove('cm-correct'), 200);
+      } else {
+        score = Math.max(0, score - 5);
+        streak = 0;
+        colorDisplay.classList.add('cm-wrong');
+        setTimeout(() => colorDisplay.classList.remove('cm-wrong'), 200);
+      }
+
+      streakDisplay.textContent = streak > 1 ? `🔥 ${streak}x ketma-ket!` : '';
+      scoreEl.innerHTML = `Ball: <strong>${score}</strong> | ⏱ <strong>${timeLeft}</strong>s`;
+      nextRound();
+    }
+
+    function onKey(e) {
+      if (!gameActive) return;
+      if (e.key === 'ArrowLeft' || e.key === 'a') answer(true);
+      if (e.key === 'ArrowRight' || e.key === 'd') answer(false);
+    }
+
+    document.addEventListener('keydown', onKey);
+
+    timer = setInterval(() => {
+      timeLeft--;
+      timerFill.style.width = (timeLeft / 30 * 100) + '%';
+      if (timeLeft <= 10) timerFill.style.background = '#FF4757';
+      else if (timeLeft <= 20) timerFill.style.background = '#FFA502';
+
+      scoreEl.innerHTML = `Ball: <strong>${score}</strong> | ⏱ <strong>${timeLeft}</strong>s`;
+
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        gameActive = false;
+        scoreEl.innerHTML = `🏁 Vaqt tugadi! Ball: <strong>${score}</strong> | Eng yaxshi: <strong>${bestStreak}x</strong>`;
+        colorDisplay.textContent = '⏱️';
+        colorDisplay.style.background = 'rgba(255,255,255,0.1)';
+        colorDisplay.style.boxShadow = 'none';
+        colorDisplay.style.fontSize = '48px';
+        colorDisplay.style.display = 'flex';
+        colorDisplay.style.alignItems = 'center';
+        colorDisplay.style.justifyContent = 'center';
+        nameDisplay.textContent = 'O\'yin tugadi!';
+        nameDisplay.style.color = '#fff';
+        yesBtn.disabled = true;
+        noBtn.disabled = true;
+      }
+    }, 1000);
+
+    nextRound();
+
+    return () => { clearInterval(timer); document.removeEventListener('keydown', onKey); };
   }
 
 })();
