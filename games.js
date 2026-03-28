@@ -1463,4 +1463,539 @@
     return () => { clearInterval(timer); document.removeEventListener('keydown', onKey); };
   }
 
+  // ============================================================
+  // 10. SPACE WAVES (Space Shooter)
+  // ============================================================
+  function initSpaceWaves() {
+    const W = 360, H = 500;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    canvas.className = 'game-canvas';
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+
+    const wrap = document.createElement('div');
+    wrap.style.position = 'relative';
+    wrap.appendChild(canvas);
+    container.appendChild(wrap);
+
+    // Mobile controls
+    const mobileControls = document.createElement('div');
+    mobileControls.className = 'mobile-controls';
+    ['⬅', '🔫', '➡'].forEach((icon, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'mobile-btn';
+      btn.textContent = icon;
+      const actions = ['left', 'shoot', 'right'];
+      btn.addEventListener('touchstart', (e) => { e.preventDefault(); keys[actions[i]] = true; });
+      btn.addEventListener('touchend', () => { keys[actions[i]] = false; });
+      btn.addEventListener('mousedown', () => { keys[actions[i]] = true; });
+      btn.addEventListener('mouseup', () => { keys[actions[i]] = false; });
+      mobileControls.appendChild(btn);
+    });
+    container.appendChild(mobileControls);
+
+    const ctx = canvas.getContext('2d');
+    let player = { x: W / 2, y: H - 50, w: 28, h: 28 };
+    let bullets = [];
+    let enemies = [];
+    let particles = [];
+    let stars = Array.from({ length: 40 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      s: Math.random() * 1.5 + 0.5, speed: Math.random() * 1.5 + 0.5
+    }));
+    let score = 0;
+    let wave = 1;
+    let gameOver = false;
+    let keys = { left: false, right: false, shoot: false };
+    let shootCooldown = 0;
+    let animId;
+    let enemySpawnTimer = 0;
+
+    scoreEl.innerHTML = `Ball: <strong>0</strong> | To'lqin: <strong>1</strong>`;
+
+    function spawnWave() {
+      const count = 3 + wave * 2;
+      for (let i = 0; i < count; i++) {
+        enemies.push({
+          x: 20 + Math.random() * (W - 40),
+          y: -20 - Math.random() * 200,
+          w: 22, h: 22,
+          speed: 0.8 + wave * 0.2 + Math.random() * 0.5,
+          hp: wave > 3 ? 2 : 1,
+          color: wave > 3 ? '#FF6B9D' : '#FF4757'
+        });
+      }
+    }
+
+    function addParticles(x, y, color, count) {
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5,
+          life: 20 + Math.random() * 15,
+          color, size: 2 + Math.random() * 3
+        });
+      }
+    }
+
+    function update() {
+      if (gameOver) return;
+
+      // Player movement
+      if (keys.left && player.x > 14) player.x -= 5;
+      if (keys.right && player.x < W - 14) player.x += 5;
+
+      // Shooting
+      if (shootCooldown > 0) shootCooldown--;
+      if (keys.shoot && shootCooldown <= 0) {
+        bullets.push({ x: player.x, y: player.y - 14, vy: -7 });
+        shootCooldown = 10;
+      }
+
+      // Bullets
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        bullets[i].y += bullets[i].vy;
+        if (bullets[i].y < -10) { bullets.splice(i, 1); continue; }
+
+        // Hit detection
+        for (let j = enemies.length - 1; j >= 0; j--) {
+          const e = enemies[j], b = bullets[i];
+          if (b && Math.abs(b.x - e.x) < (e.w / 2 + 4) && Math.abs(b.y - e.y) < (e.h / 2 + 4)) {
+            bullets.splice(i, 1);
+            e.hp--;
+            if (e.hp <= 0) {
+              addParticles(e.x, e.y, e.color, 8);
+              enemies.splice(j, 1);
+              score += 10 * wave;
+              scoreEl.innerHTML = `Ball: <strong>${score}</strong> | To'lqin: <strong>${wave}</strong>`;
+            }
+            break;
+          }
+        }
+      }
+
+      // Enemies
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        enemies[i].y += enemies[i].speed;
+        // Hit player
+        if (Math.abs(enemies[i].x - player.x) < 20 && Math.abs(enemies[i].y - player.y) < 20) {
+          gameOver = true;
+          addParticles(player.x, player.y, '#6C63FF', 20);
+          scoreEl.innerHTML = `💥 O'yin tugadi! Ball: <strong>${score}</strong> | To'lqin: <strong>${wave}</strong>`;
+          return;
+        }
+        // Off screen
+        if (enemies[i].y > H + 20) {
+          enemies.splice(i, 1);
+        }
+      }
+
+      // Spawn new wave
+      if (enemies.length === 0) {
+        wave++;
+        scoreEl.innerHTML = `Ball: <strong>${score}</strong> | To'lqin: <strong>${wave}</strong>`;
+        spawnWave();
+      }
+
+      // Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].x += particles[i].vx;
+        particles[i].y += particles[i].vy;
+        particles[i].life--;
+        if (particles[i].life <= 0) particles.splice(i, 1);
+      }
+
+      // Stars
+      stars.forEach(s => {
+        s.y += s.speed;
+        if (s.y > H) { s.y = 0; s.x = Math.random() * W; }
+      });
+    }
+
+    function draw() {
+      // Background
+      const bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, '#05060f');
+      bg.addColorStop(1, '#0a0e1a');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Stars
+      stars.forEach(s => {
+        ctx.fillStyle = `rgba(255,255,255,${0.3 + s.s * 0.3})`;
+        ctx.fillRect(s.x, s.y, s.s, s.s);
+      });
+
+      // Player (spaceship)
+      if (!gameOver) {
+        ctx.save();
+        ctx.translate(player.x, player.y);
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#6C63FF';
+        ctx.fillStyle = '#6C63FF';
+        ctx.beginPath();
+        ctx.moveTo(0, -14);
+        ctx.lineTo(-12, 12);
+        ctx.lineTo(-4, 8);
+        ctx.lineTo(0, 14);
+        ctx.lineTo(4, 8);
+        ctx.lineTo(12, 12);
+        ctx.closePath();
+        ctx.fill();
+        // Engine glow
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#00D4AA';
+        ctx.fillStyle = '#00D4AA';
+        ctx.beginPath();
+        ctx.moveTo(-4, 10);
+        ctx.lineTo(0, 18 + Math.random() * 4);
+        ctx.lineTo(4, 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.restore();
+      }
+
+      // Bullets
+      bullets.forEach(b => {
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#00D4AA';
+        ctx.fillStyle = '#00D4AA';
+        ctx.fillRect(b.x - 1.5, b.y, 3, 10);
+        ctx.shadowBlur = 0;
+      });
+
+      // Enemies
+      enemies.forEach(e => {
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = e.color;
+        ctx.fillStyle = e.color;
+        ctx.save();
+        ctx.translate(e.x, e.y);
+        ctx.beginPath();
+        ctx.moveTo(0, -e.h / 2);
+        ctx.lineTo(e.w / 2, 0);
+        ctx.lineTo(e.w / 4, e.h / 2);
+        ctx.lineTo(-e.w / 4, e.h / 2);
+        ctx.lineTo(-e.w / 2, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.restore();
+      });
+
+      // Particles
+      particles.forEach(p => {
+        ctx.globalAlpha = p.life / 35;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    function loop() {
+      update();
+      draw();
+      if (!gameOver) animId = requestAnimationFrame(loop);
+      else { draw(); }
+    }
+
+    function onKeyDown(e) {
+      if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = true;
+      if (e.key === 'ArrowRight' || e.key === 'd') keys.right = true;
+      if (e.key === ' ' || e.key === 'ArrowUp') { keys.shoot = true; e.preventDefault(); }
+    }
+    function onKeyUp(e) {
+      if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = false;
+      if (e.key === 'ArrowRight' || e.key === 'd') keys.right = false;
+      if (e.key === ' ' || e.key === 'ArrowUp') keys.shoot = false;
+    }
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+    spawnWave();
+    animId = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('keyup', onKeyUp);
+    };
+  }
+
+  // ============================================================
+  // 11. GEOMETRY DASH
+  // ============================================================
+  function initGeoDash() {
+    const W = 400, H = 300;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    canvas.className = 'game-canvas';
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+
+    const wrap = document.createElement('div');
+    wrap.style.position = 'relative';
+    wrap.appendChild(canvas);
+    container.appendChild(wrap);
+
+    const ctx = canvas.getContext('2d');
+    const GROUND_Y = H - 40;
+    const PLAYER_SIZE = 24;
+    const GRAVITY = 0.6;
+    const JUMP_FORCE = -10;
+    const BASE_SPEED = 4;
+
+    let player = { x: 60, y: GROUND_Y - PLAYER_SIZE, vy: 0, grounded: true, rotation: 0 };
+    let obstacles = [];
+    let bgParticles = [];
+    let groundX = 0;
+    let score = 0;
+    let distance = 0;
+    let speed = BASE_SPEED;
+    let gameOver = false;
+    let animId;
+    let colorPhase = 0;
+
+    // Generate background particles
+    for (let i = 0; i < 25; i++) {
+      bgParticles.push({
+        x: Math.random() * W, y: Math.random() * (GROUND_Y - 40),
+        size: 1 + Math.random() * 2, alpha: 0.1 + Math.random() * 0.3,
+        speed: 0.5 + Math.random()
+      });
+    }
+
+    scoreEl.innerHTML = 'Sakrash uchun bosing! 👆';
+
+    function spawnObstacle() {
+      const types = ['spike', 'spike', 'spike', 'tallspike', 'platform'];
+      const type = types[Math.floor(Math.random() * types.length)];
+
+      if (type === 'spike') {
+        obstacles.push({
+          x: W + 20, y: GROUND_Y, w: 24, h: 28, type: 'spike'
+        });
+      } else if (type === 'tallspike') {
+        obstacles.push({
+          x: W + 20, y: GROUND_Y, w: 24, h: 44, type: 'spike'
+        });
+      } else {
+        obstacles.push({
+          x: W + 20, y: GROUND_Y - 50 - Math.random() * 40, w: 60, h: 12, type: 'platform'
+        });
+        // Spike on platform
+        obstacles.push({
+          x: W + 20 + 80, y: GROUND_Y, w: 24, h: 28, type: 'spike'
+        });
+      }
+    }
+
+    function jump() {
+      if (gameOver) return;
+      if (player.grounded) {
+        player.vy = JUMP_FORCE;
+        player.grounded = false;
+      }
+    }
+
+    canvas.addEventListener('click', jump);
+    function onKey(e) {
+      if (e.key === ' ' || e.key === 'ArrowUp') { e.preventDefault(); jump(); }
+    }
+    document.addEventListener('keydown', onKey);
+
+    // Touch support
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); }, { passive: false });
+
+    function update() {
+      if (gameOver) return;
+
+      distance++;
+      colorPhase += 0.003;
+      speed = BASE_SPEED + Math.floor(distance / 500) * 0.5;
+
+      // Player physics
+      player.vy += GRAVITY;
+      player.y += player.vy;
+
+      if (player.y >= GROUND_Y - PLAYER_SIZE) {
+        player.y = GROUND_Y - PLAYER_SIZE;
+        player.vy = 0;
+        player.grounded = true;
+      }
+
+      // Rotation
+      if (!player.grounded) {
+        player.rotation += 5;
+      } else {
+        player.rotation = Math.round(player.rotation / 90) * 90;
+      }
+
+      // Spawn obstacles
+      if (distance % Math.max(40, 80 - Math.floor(distance / 300) * 5) === 0) {
+        spawnObstacle();
+      }
+
+      // Move obstacles
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        obstacles[i].x -= speed;
+        if (obstacles[i].x + obstacles[i].w < -20) {
+          obstacles.splice(i, 1);
+          score++;
+          scoreEl.innerHTML = `Ball: <strong>${score}</strong> | Masofa: <strong>${distance}</strong>`;
+          continue;
+        }
+
+        // Collision check
+        const o = obstacles[i];
+        if (o.type === 'spike') {
+          // Triangle collision (simplified)
+          const px = player.x + PLAYER_SIZE / 2;
+          const py = player.y + PLAYER_SIZE / 2;
+          const cx = o.x + o.w / 2;
+          const cy = o.y - o.h / 2;
+          if (Math.abs(px - cx) < (PLAYER_SIZE / 2 + o.w / 2 - 6) && 
+              py > cy && py < o.y + 4) {
+            gameOver = true;
+            scoreEl.innerHTML = `💥 O'yin tugadi! Ball: <strong>${score}</strong> | Masofa: <strong>${distance}</strong>`;
+          }
+        }
+      }
+
+      // Background particles
+      bgParticles.forEach(p => {
+        p.x -= p.speed * (speed / BASE_SPEED);
+        if (p.x < -5) { p.x = W + 5; p.y = Math.random() * (GROUND_Y - 40); }
+      });
+
+      groundX = (groundX - speed) % 40;
+    }
+
+    function getThemeColor() {
+      const hue = (colorPhase * 360) % 360;
+      return `hsl(${hue}, 70%, 55%)`;
+    }
+
+    function draw() {
+      const themeColor = getThemeColor();
+
+      // Background gradient
+      const bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, '#05060f');
+      bg.addColorStop(0.7, '#0a0e1a');
+      bg.addColorStop(1, '#121832');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Background particles
+      bgParticles.forEach(p => {
+        ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      });
+
+      // Ground
+      ctx.fillStyle = '#1a1f3a';
+      ctx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
+      // Ground line
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = themeColor;
+      ctx.fillStyle = themeColor;
+      ctx.fillRect(0, GROUND_Y, W, 2);
+      ctx.shadowBlur = 0;
+
+      // Ground pattern
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.lineWidth = 1;
+      for (let x = groundX; x < W; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, GROUND_Y);
+        ctx.lineTo(x, H);
+        ctx.stroke();
+      }
+
+      // Obstacles
+      obstacles.forEach(o => {
+        if (o.type === 'spike') {
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = themeColor;
+          ctx.fillStyle = themeColor;
+          ctx.beginPath();
+          ctx.moveTo(o.x + o.w / 2, o.y - o.h);
+          ctx.lineTo(o.x + o.w, o.y);
+          ctx.lineTo(o.x, o.y);
+          ctx.closePath();
+          ctx.fill();
+          // Inner triangle
+          ctx.fillStyle = 'rgba(0,0,0,0.3)';
+          ctx.beginPath();
+          ctx.moveTo(o.x + o.w / 2, o.y - o.h + 8);
+          ctx.lineTo(o.x + o.w - 5, o.y);
+          ctx.lineTo(o.x + 5, o.y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        } else if (o.type === 'platform') {
+          ctx.fillStyle = themeColor;
+          ctx.fillRect(o.x, o.y, o.w, o.h);
+        }
+      });
+
+      // Player (rotating cube)
+      ctx.save();
+      ctx.translate(player.x + PLAYER_SIZE / 2, player.y + PLAYER_SIZE / 2);
+      ctx.rotate(player.rotation * Math.PI / 180);
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = '#6C63FF';
+      ctx.fillStyle = '#6C63FF';
+      ctx.fillRect(-PLAYER_SIZE / 2, -PLAYER_SIZE / 2, PLAYER_SIZE, PLAYER_SIZE);
+      // Inner highlight
+      ctx.fillStyle = 'rgba(255,255,255,0.2)';
+      ctx.fillRect(-PLAYER_SIZE / 2 + 3, -PLAYER_SIZE / 2 + 3, PLAYER_SIZE - 6, PLAYER_SIZE / 2 - 3);
+      // Eye
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(2, -4, 7, 7);
+      ctx.fillStyle = '#000';
+      ctx.fillRect(5, -2, 3, 3);
+      ctx.shadowBlur = 0;
+      ctx.restore();
+
+      // Trail effect
+      if (!player.grounded && !gameOver) {
+        ctx.fillStyle = 'rgba(108,99,255,0.3)';
+        for (let i = 1; i <= 3; i++) {
+          ctx.globalAlpha = 0.3 - i * 0.08;
+          ctx.fillRect(player.x - i * 8, player.y + 4, PLAYER_SIZE - 4, PLAYER_SIZE - 4);
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      // Game over overlay
+      if (gameOver) {
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 24px "Space Grotesk", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('O\'yin tugadi!', W / 2, H / 2 - 10);
+        ctx.font = '16px "Space Grotesk", sans-serif';
+        ctx.fillStyle = '#aaa';
+        ctx.fillText(`Masofa: ${distance}`, W / 2, H / 2 + 20);
+      }
+    }
+
+    function loop() {
+      update();
+      draw();
+      if (!gameOver) animId = requestAnimationFrame(loop);
+    }
+
+    animId = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      document.removeEventListener('keydown', onKey);
+    };
+  }
+
 })();
