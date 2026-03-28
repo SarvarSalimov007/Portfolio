@@ -1,6 +1,6 @@
 // ============================
 // SARVAR SALIMOV — Mini Games
-// 9 Browser Games with Premium UI
+// 11 Browser Games with Premium UI
 // ============================
 
 (() => {
