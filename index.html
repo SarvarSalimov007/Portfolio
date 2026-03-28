@@ -53,6 +53,7 @@
                     <li><a href="#about">Men haqimda</a></li>
                     <li><a href="#skills">Ko'nikmalar</a></li>
                     <li><a href="#projects">Loyihalar</a></li>
+                    <li><a href="#games">O'yinlar</a></li>
                     <li><a href="#contact">Bog'lanish</a></li>
                     <li><button id="themeToggle" class="theme-btn" type="button" aria-label="Rejimni almashtirish"><span class="theme-icon">🌙</span></button></li>
                 </ul>
@@ -278,11 +279,76 @@
             </div>
         </section>
 
+        <!-- Mini Games -->
+        <section id="games" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">04</span>
+                    <h2 class="section-title">Mini O'yinlar</h2>
+                    <div class="section-line"></div>
+                </div>
+                <p class="games-subtitle">Dam olish uchun qiziqarli o'yinlar — to'g'ridan-to'g'ri brauzeringizda o'ynang! 🎮</p>
+                <div class="games-grid">
+                    <div class="game-card glass-card" data-game="tictactoe">
+                        <div class="game-card-icon">❌⭕</div>
+                        <h3>Krestik-Nolik</h3>
+                        <p>Klassik 3×3 strategik o'yin. Kompyuterga qarshi o'ynang!</p>
+                        <button class="btn btn-primary btn-play" data-game="tictactoe">🎮 O'ynash</button>
+                    </div>
+                    <div class="game-card glass-card" data-game="snake">
+                        <div class="game-card-icon">🐍</div>
+                        <h3>Ilon O'yini</h3>
+                        <p>Ilonni boshqaring, mevalarni yig'ing va uzunroq bo'ling!</p>
+                        <button class="btn btn-primary btn-play" data-game="snake">🎮 O'ynash</button>
+                    </div>
+                    <div class="game-card glass-card" data-game="memory">
+                        <div class="game-card-icon">🧠</div>
+                        <h3>Xotira O'yini</h3>
+                        <p>Kartalarni oching va juftliklarni toping. Xotirangizni sinang!</p>
+                        <button class="btn btn-primary btn-play" data-game="memory">🎮 O'ynash</button>
+                    </div>
+                    <div class="game-card glass-card" data-game="flappy">
+                        <div class="game-card-icon">🐦</div>
+                        <h3>Flappy Bird</h3>
+                        <p>Qushni uchiring va to'siqlardan saqlaning!</p>
+                        <button class="btn btn-primary btn-play" data-game="flappy">🎮 O'ynash</button>
+                    </div>
+                    <div class="game-card glass-card" data-game="game2048">
+                        <div class="game-card-icon">🔢</div>
+                        <h3>2048</h3>
+                        <p>Raqamlarni birlashtiring va 2048 ga yeting!</p>
+                        <button class="btn btn-primary btn-play" data-game="game2048">🎮 O'ynash</button>
+                    </div>
+                    <div class="game-card glass-card" data-game="tetris">
+                        <div class="game-card-icon">🧱</div>
+                        <h3>Tetris</h3>
+                        <p>Bloklarni joylashtiring va qatorlarni to'ldiring!</p>
+                        <button class="btn btn-primary btn-play" data-game="tetris">🎮 O'ynash</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Game Modal -->
+        <div id="gameModal" class="game-modal" hidden>
+            <div class="game-modal-content">
+                <div class="game-modal-header">
+                    <h3 id="gameModalTitle">O'yin</h3>
+                    <div class="game-modal-actions">
+                        <button id="gameRestartBtn" class="btn btn-outline btn-sm">🔄 Qayta</button>
+                        <button id="gameCloseBtn" class="game-close-btn" aria-label="Yopish">&times;</button>
+                    </div>
+                </div>
+                <div id="gameContainer" class="game-container"></div>
+                <div id="gameScore" class="game-score"></div>
+            </div>
+        </div>
+
         <!-- Contact -->
         <section id="contact" class="section">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-tag">04</span>
+                    <span class="section-tag">05</span>
                     <h2 class="section-title">Bog'lanish</h2>
                     <div class="section-line"></div>
                 </div>
@@ -358,6 +424,7 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="games.js"></script>
     <noscript>To'liq tajriba uchun JavaScriptni yoqing.</noscript>
 </body>
 </html>
