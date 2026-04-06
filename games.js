@@ -2325,12 +2325,7 @@
         });
     }
 
-    // Traps (Sawblades)
-    let saws = [
-      { rad: 120, angle: 0, speed: 0.025, spin: 0, x:0, y:0 },
-      { rad: 180, angle: Math.PI, speed: -0.018, spin: 0, x:0, y:0 }
-    ];
-
+    // Saws removed by request
     class FloppyPuppet {
       constructor(x, y, color, isP1) {
         this.isP1 = isP1;
@@ -2378,9 +2373,9 @@
         
         // Attack Spin (Beyblade style)
         if(ctrl.attack && this.attackCd <= 0) {
-          this.vAngle += 2.5; // huge spin torque
-          this.vx += Math.cos(this.angle) * 12; // propel forward
-          this.vy += Math.sin(this.angle) * 12;
+          this.vAngle += 3.5; // mega spin torque for perfectly chaotic feel
+          this.vx += Math.cos(this.angle) * 16; // propel forward faster
+          this.vy += Math.sin(this.angle) * 16;
           this.attackCd = 35; // cooldown
           spawnDust(this.x, this.y);
         }
@@ -2612,17 +2607,6 @@
          return ctrl;
       }
 
-      // Avoid sawblades
-      for(let saw of saws) {
-         let sdx = saw.x - bot.x;
-         let sdy = saw.y - bot.y;
-         if(Math.hypot(sdx, sdy) < 90) {
-            ctrl.x = -Math.sign(sdx);
-            ctrl.y = -Math.sign(sdy);
-            return ctrl;
-         }
-      }
-
       // Attack player
       if(dist > 60) {
           ctrl.x = Math.sign(dx);
@@ -2658,27 +2642,6 @@
       resolveBodyCollision(p1, p2);
       checkWeaponHit(p1, p2);
       checkWeaponHit(p2, p1);
-
-      // Sawblades logic
-      saws.forEach(saw => {
-        saw.angle += saw.speed;
-        saw.x = W/2 + Math.cos(saw.angle) * saw.rad;
-        saw.y = H/2 + Math.sin(saw.angle) * saw.rad;
-        saw.spin += 0.3;
-        
-        [p1, p2].forEach(p => {
-            if(p.dead) return;
-            let dx = p.x - saw.x;
-            let dy = p.y - saw.y;
-            let dist = Math.hypot(dx, dy);
-            if(dist < 16 + 25) { // bodyR + sawR
-                p.hp -= 2; // rapid damage
-                p.vx += Math.sign(dx) * 8;
-                p.vy += Math.sign(dy) * 8;
-                spawnSparks(p.x, p.y, '#ff3333');
-            }
-        });
-      });
 
       // Particles
       for(let i=particles.length-1; i>=0; i--) {
@@ -2736,23 +2699,6 @@
         ctx.beginPath(); ctx.moveTo(-220, x); ctx.lineTo(220, x); ctx.stroke();
       }
       ctx.restore();
-
-      // Draw Sawblades
-      saws.forEach(saw => {
-        ctx.save();
-        ctx.translate(saw.x, saw.y);
-        ctx.rotate(saw.spin);
-        ctx.fillStyle = '#999';
-        ctx.beginPath();
-        for(let i=0; i<8; i++) {
-            let a = i * Math.PI/4;
-            ctx.lineTo(Math.cos(a)*28, Math.sin(a)*28);
-            ctx.lineTo(Math.cos(a+0.2)*18, Math.sin(a+0.2)*18);
-        }
-        ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#ff3333'; ctx.beginPath(); ctx.arc(0,0,8,0,Math.PI*2); ctx.fill();
-        ctx.restore();
-      });
 
       if(!isVersus && !gameOver && !p2.dead) {
         ctx.fillStyle = 'rgba(255,107,157,0.5)';
