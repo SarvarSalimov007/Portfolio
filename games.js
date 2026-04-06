@@ -1,5 +1,5 @@
 // ============================
-// SARVAR SALIMOV — Mini Games
+// SARVAR SALIMOV вЂ” Mini Games
 // 12 Browser Games with Premium UI
 // ============================
 
@@ -28,19 +28,19 @@
     scoreEl.textContent = '';
 
     const games = {
-      tictactoe: { title: '❌⭕ Krestik-Nolik', init: initTicTacToe },
-      snake: { title: '🐍 Ilon O\'yini', init: initSnake },
-      memory: { title: '🧠 Xotira O\'yini', init: initMemory },
-      flappy: { title: '🐦 Flappy Bird', init: initFlappy },
-      game2048: { title: '🔢 2048', init: init2048 },
-      tetris: { title: '🧱 Tetris', init: initTetris },
-      pong: { title: '🏓 Pong', init: initPong },
-      minesweeper: { title: '💣 Minesweeper', init: initMinesweeper },
-      colormatch: { title: '🎨 Rang Topish', init: initColorMatch },
-      spacewaves: { title: '🚀 Space Waves', init: initSpaceWaves },
-      geodash: { title: '🔷 Geometry Dash', init: initGeoDash },
-      spacehockey: { title: '🏒 Space Hockey', init: initSpaceHockey },
-      puppetfighter: { title: '🥷 Puppet Fighter 2', init: initPuppetFighter },
+      tictactoe: { title: 'вќЊв­• Krestik-Nolik', init: initTicTacToe },
+      snake: { title: 'рџђЌ Ilon O\'yini', init: initSnake },
+      memory: { title: 'рџ§  Xotira O\'yini', init: initMemory },
+      flappy: { title: 'рџђ¦ Flappy Bird', init: initFlappy },
+      game2048: { title: 'рџ”ў 2048', init: init2048 },
+      tetris: { title: 'рџ§± Tetris', init: initTetris },
+      pong: { title: 'рџЏ“ Pong', init: initPong },
+      minesweeper: { title: 'рџ’Ј Minesweeper', init: initMinesweeper },
+      colormatch: { title: 'рџЋЁ Rang Topish', init: initColorMatch },
+      spacewaves: { title: 'рџљЂ Space Waves', init: initSpaceWaves },
+      geodash: { title: 'рџ”· Geometry Dash', init: initGeoDash },
+      spacehockey: { title: 'рџЏ’ Space Hockey', init: initSpaceHockey },
+      puppetfighter: { title: 'рџҐ· Puppet Fighter 2', init: initPuppetFighter },
     };
 
     const game = games[name];
@@ -118,8 +118,8 @@
       playerTurn = false;
 
       const win = checkWin(board, 'X');
-      if (win) { endGame('Siz yutdingiz! 🎉', win); return; }
-      if (board.every(c => c)) { endGame('Durrang! 🤝', null); return; }
+      if (win) { endGame('Siz yutdingiz! рџЋ‰', win); return; }
+      if (board.every(c => c)) { endGame('Durrang! рџ¤ќ', null); return; }
 
       status.textContent = 'Kompyuter o\'ylayapti...';
       setTimeout(aiMove, 400);
@@ -134,8 +134,8 @@
       cells[move].classList.add('o', 'taken');
 
       const win = checkWin(board, 'O');
-      if (win) { endGame('Kompyuter yutdi! 😅', win); return; }
-      if (board.every(c => c)) { endGame('Durrang! 🤝', null); return; }
+      if (win) { endGame('Kompyuter yutdi! рџ…', win); return; }
+      if (board.every(c => c)) { endGame('Durrang! рџ¤ќ', null); return; }
 
       playerTurn = true;
       status.textContent = 'Sizning navbatingiz (X)';
@@ -181,7 +181,7 @@
     // Mobile controls
     const mobileControls = document.createElement('div');
     mobileControls.className = 'mobile-controls';
-    ['⬆','⬅','⬇','➡'].forEach((icon,i) => {
+    ['в¬†','в¬…','в¬‡','вћЎ'].forEach((icon,i) => {
       const btn = document.createElement('button');
       btn.className = 'mobile-btn';
       btn.textContent = icon;
@@ -294,7 +294,7 @@
   // 3. MEMORY CARDS
   // ============================================================
   function initMemory() {
-    const emojis = ['🎮','🚀','💎','🎨','⚡','🌟','🎯','🔥'];
+    const emojis = ['рџЋ®','рџљЂ','рџ’Ћ','рџЋЁ','вљЎ','рџЊџ','рџЋЇ','рџ”Ґ'];
     let cards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
     let flipped = [];
     let matched = 0;
@@ -338,7 +338,7 @@
           locked = false;
 
           if (matched === cards.length) {
-            scoreEl.innerHTML = `🎉 Tabriklaymiz! <strong>${moves}</strong> urinishda yutdingiz!`;
+            scoreEl.innerHTML = `рџЋ‰ Tabriklaymiz! <strong>${moves}</strong> urinishda yutdingiz!`;
           }
         } else {
           setTimeout(() => {
@@ -382,7 +382,7 @@
     let started = false;
     let animId;
 
-    scoreEl.innerHTML = 'Ball: <strong>0</strong> — Boshlash uchun bosing!';
+    scoreEl.innerHTML = 'Ball: <strong>0</strong> вЂ” Boshlash uchun bosing!';
 
     function flap() {
       if (gameOver) return;
@@ -565,7 +565,7 @@
     // Mobile controls
     const mobileControls = document.createElement('div');
     mobileControls.className = 'mobile-controls';
-    ['⬆','⬅','⬇','➡'].forEach((icon,i) => {
+    ['в¬†','в¬…','в¬‡','вћЎ'].forEach((icon,i) => {
       const btn = document.createElement('button');
       btn.className = 'mobile-btn';
       btn.textContent = icon;
@@ -640,7 +640,7 @@
 
         // Check win
         if (grid.includes(2048)) {
-          scoreEl.innerHTML = `🎉 2048 ga yetdingiz! Ball: <strong>${score2048}</strong>`;
+          scoreEl.innerHTML = `рџЋ‰ 2048 ga yetdingiz! Ball: <strong>${score2048}</strong>`;
         }
 
         // Check game over
@@ -736,8 +736,8 @@
     mobileControls.className = 'mobile-controls';
     mobileControls.style.width = '100%';
     const controlData = [
-      {icon:'⬅', key:'ArrowLeft'}, {icon:'⬇', key:'ArrowDown'},
-      {icon:'🔄', key:'ArrowUp'}, {icon:'➡', key:'ArrowRight'}
+      {icon:'в¬…', key:'ArrowLeft'}, {icon:'в¬‡', key:'ArrowDown'},
+      {icon:'рџ”„', key:'ArrowUp'}, {icon:'вћЎ', key:'ArrowRight'}
     ];
     controlData.forEach(({icon, key}) => {
       const btn = document.createElement('button');
@@ -977,7 +977,7 @@
     // Mobile controls
     const mobileControls = document.createElement('div');
     mobileControls.className = 'mobile-controls';
-    ['⬆', '⬇'].forEach((icon, i) => {
+    ['в¬†', 'в¬‡'].forEach((icon, i) => {
       const btn = document.createElement('button');
       btn.className = 'mobile-btn';
       btn.textContent = icon;
@@ -1000,7 +1000,7 @@
     let keys = { up: false, down: false };
     let animId;
 
-    scoreEl.innerHTML = 'Siz: <strong>0</strong> — Kompyuter: <strong>0</strong>';
+    scoreEl.innerHTML = 'Siz: <strong>0</strong> вЂ” Kompyuter: <strong>0</strong>';
 
     function resetBall(dir) {
       ball.x = W / 2;
@@ -1055,18 +1055,18 @@
       // Scoring
       if (ball.x < 0) {
         aiScore++;
-        scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> — Kompyuter: <strong>${aiScore}</strong>`;
+        scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> вЂ” Kompyuter: <strong>${aiScore}</strong>`;
         if (aiScore >= 7) {
-          scoreEl.innerHTML = `😅 Kompyuter yutdi! ${playerScore} : ${aiScore}`;
+          scoreEl.innerHTML = `рџ… Kompyuter yutdi! ${playerScore} : ${aiScore}`;
           cancelAnimationFrame(animId); return;
         }
         resetBall(1);
       }
       if (ball.x > W) {
         playerScore++;
-        scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> — Kompyuter: <strong>${aiScore}</strong>`;
+        scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> вЂ” Kompyuter: <strong>${aiScore}</strong>`;
         if (playerScore >= 7) {
-          scoreEl.innerHTML = `🎉 Siz yutdingiz! ${playerScore} : ${aiScore}`;
+          scoreEl.innerHTML = `рџЋ‰ Siz yutdingiz! ${playerScore} : ${aiScore}`;
           cancelAnimationFrame(animId); return;
         }
         resetBall(-1);
@@ -1158,7 +1158,7 @@
 
     const infoBar = document.createElement('div');
     infoBar.className = 'mine-info';
-    infoBar.innerHTML = `💣 <strong>${MINES}</strong> ta mina | 🚩 <span id="mFlagCount">0</span> / ${MINES}`;
+    infoBar.innerHTML = `рџ’Ј <strong>${MINES}</strong> ta mina | рџљ© <span id="mFlagCount">0</span> / ${MINES}`;
     wrapper.appendChild(infoBar);
 
     const boardEl = document.createElement('div');
@@ -1168,7 +1168,7 @@
 
     const hint = document.createElement('p');
     hint.className = 'mine-hint';
-    hint.textContent = '💡 O\'ng klik = bayroq qo\'yish | Chapni bosing = ochish';
+    hint.textContent = 'рџ’Ў O\'ng klik = bayroq qo\'yish | Chapni bosing = ochish';
     wrapper.appendChild(hint);
 
     container.appendChild(wrapper);
@@ -1204,7 +1204,7 @@
       }
     }
 
-    scoreEl.innerHTML = 'Minalarni toping! 💣';
+    scoreEl.innerHTML = 'Minalarni toping! рџ’Ј';
 
     function placeMines(safeR, safeC) {
       let placed = 0;
@@ -1248,9 +1248,9 @@
         // Hit mine
         gameOver = true;
         cell.classList.add('mine-hit');
-        cell.textContent = '💥';
+        cell.textContent = 'рџ’Ґ';
         revealAll();
-        scoreEl.innerHTML = '💥 Mina portladi! O\'yin tugadi.';
+        scoreEl.innerHTML = 'рџ’Ґ Mina portladi! O\'yin tugadi.';
         return;
       }
 
@@ -1276,7 +1276,7 @@
     function toggleFlag(r, c) {
       if (gameOver || won || revealed[r][c]) return;
       flagged[r][c] = !flagged[r][c];
-      cellEls[r][c].textContent = flagged[r][c] ? '🚩' : '';
+      cellEls[r][c].textContent = flagged[r][c] ? 'рџљ©' : '';
       cellEls[r][c].classList.toggle('flagged', flagged[r][c]);
       flagCount += flagged[r][c] ? 1 : -1;
       const el = document.getElementById('mFlagCount');
@@ -1292,7 +1292,7 @@
       }
       if (unrevealedSafe === 0) {
         won = true;
-        scoreEl.innerHTML = '🎉 Tabriklaymiz! Barcha minalarni topdingiz!';
+        scoreEl.innerHTML = 'рџЋ‰ Tabriklaymiz! Barcha minalarni topdingiz!';
       }
     }
 
@@ -1300,7 +1300,7 @@
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
           if (grid[r][c] === -1 && !revealed[r][c]) {
-            cellEls[r][c].textContent = '💣';
+            cellEls[r][c].textContent = 'рџ’Ј';
             cellEls[r][c].classList.add('revealed', 'mine-show');
           }
         }
@@ -1365,12 +1365,12 @@
 
     const yesBtn = document.createElement('button');
     yesBtn.className = 'btn btn-primary cm-btn cm-yes';
-    yesBtn.textContent = '✅ Ha';
+    yesBtn.textContent = 'вњ… Ha';
     yesBtn.addEventListener('click', () => answer(true));
 
     const noBtn = document.createElement('button');
     noBtn.className = 'btn btn-outline cm-btn cm-no';
-    noBtn.textContent = '❌ Yo\'q';
+    noBtn.textContent = 'вќЊ Yo\'q';
     noBtn.addEventListener('click', () => answer(false));
 
     btnWrap.appendChild(yesBtn);
@@ -1378,7 +1378,7 @@
     wrapper.appendChild(btnWrap);
 
     container.appendChild(wrapper);
-    scoreEl.innerHTML = 'Ball: <strong>0</strong> | ⏱ <strong>30</strong>s';
+    scoreEl.innerHTML = 'Ball: <strong>0</strong> | вЏ± <strong>30</strong>s';
 
     function nextRound() {
       if (!gameActive) return;
@@ -1421,8 +1421,8 @@
         setTimeout(() => colorDisplay.classList.remove('cm-wrong'), 200);
       }
 
-      streakDisplay.textContent = streak > 1 ? `🔥 ${streak}x ketma-ket!` : '';
-      scoreEl.innerHTML = `Ball: <strong>${score}</strong> | ⏱ <strong>${timeLeft}</strong>s`;
+      streakDisplay.textContent = streak > 1 ? `рџ”Ґ ${streak}x ketma-ket!` : '';
+      scoreEl.innerHTML = `Ball: <strong>${score}</strong> | вЏ± <strong>${timeLeft}</strong>s`;
       nextRound();
     }
 
@@ -1440,13 +1440,13 @@
       if (timeLeft <= 10) timerFill.style.background = '#FF4757';
       else if (timeLeft <= 20) timerFill.style.background = '#FFA502';
 
-      scoreEl.innerHTML = `Ball: <strong>${score}</strong> | ⏱ <strong>${timeLeft}</strong>s`;
+      scoreEl.innerHTML = `Ball: <strong>${score}</strong> | вЏ± <strong>${timeLeft}</strong>s`;
 
       if (timeLeft <= 0) {
         clearInterval(timer);
         gameActive = false;
-        scoreEl.innerHTML = `🏁 Vaqt tugadi! Ball: <strong>${score}</strong> | Eng yaxshi: <strong>${bestStreak}x</strong>`;
-        colorDisplay.textContent = '⏱️';
+        scoreEl.innerHTML = `рџЏЃ Vaqt tugadi! Ball: <strong>${score}</strong> | Eng yaxshi: <strong>${bestStreak}x</strong>`;
+        colorDisplay.textContent = 'вЏ±пёЏ';
         colorDisplay.style.background = 'rgba(255,255,255,0.1)';
         colorDisplay.style.boxShadow = 'none';
         colorDisplay.style.fontSize = '48px';
@@ -1497,7 +1497,7 @@
     let gameOver = false;
     let animId;
 
-    scoreEl.innerHTML = 'Harakatlanish uchun bosing! ⚡';
+    scoreEl.innerHTML = 'Harakatlanish uchun bosing! вљЎ';
 
     function spawnObstacle() {
       const h = 40 + Math.random() * 80;
@@ -1543,7 +1543,7 @@
       // Border bounds
       if (player.y <= CEIL_Y || player.y >= GROUND_Y - PLAYER_SIZE) {
         gameOver = true;
-        scoreEl.innerHTML = `💥 Portladi! Ball: <strong>${score}</strong>`;
+        scoreEl.innerHTML = `рџ’Ґ Portladi! Ball: <strong>${score}</strong>`;
       }
 
       // Path tracking (for the zigzag line)
@@ -1562,7 +1562,7 @@
         if (player.x + PLAYER_SIZE > o.x && player.x < o.x + o.w &&
             player.y + PLAYER_SIZE > o.y && player.y < o.y + o.h) {
           gameOver = true;
-          scoreEl.innerHTML = `💥 To'siq! Ball: <strong>${score}</strong>`;
+          scoreEl.innerHTML = `рџ’Ґ To'siq! Ball: <strong>${score}</strong>`;
         }
       }
 
@@ -1652,7 +1652,7 @@
   }
 
   // ============================================================
-  // 11. GEOMETRY DASH — SUB ZERO "PRESS START"
+  // 11. GEOMETRY DASH вЂ” SUB ZERO "PRESS START"
   // ============================================================
   function initGeoDash() {
     const W = 600, H = 340;
@@ -1700,7 +1700,7 @@
       {t:'p', x:1950, h:SZ*2}, {t:'s', x:2020}, {t:'s', x:2050},
       // -- ship portal transition --
       {t:'sp', x:2200},
-      // Ship section – ceiling and floor spikes
+      // Ship section вЂ“ ceiling and floor spikes
       {t:'fs', x:2400, pos:'floor'}, {t:'fs', x:2500, pos:'ceil'},
       {t:'fs', x:2600, pos:'floor'}, {t:'fs', x:2650, pos:'floor'},
       {t:'fs', x:2750, pos:'ceil'}, {t:'fs', x:2850, pos:'floor'},
@@ -1732,7 +1732,7 @@
 
     for (let i = 0; i < 40; i++) bgStars.push({x:Math.random()*W*3, y:Math.random()*(GROUND_Y-20), s:1+Math.random()*2, a:0.1+Math.random()*0.4});
 
-    scoreEl.innerHTML = `<span style="color:#00bfff">❄ PRESS START</span> — Urinish: <strong>${attempt}</strong> | Sakrash: Space / Tap`;
+    scoreEl.innerHTML = `<span style="color:#00bfff">вќ„ PRESS START</span> вЂ” Urinish: <strong>${attempt}</strong> | Sakrash: Space / Tap`;
 
     function action(down) {
       if (won) return;
@@ -1767,7 +1767,7 @@
       won = false;
       holding = false;
       deathParticles = [];
-      scoreEl.innerHTML = `<span style="color:#00bfff">❄ PRESS START</span> — Urinish: <strong>${attempt}</strong>`;
+      scoreEl.innerHTML = `<span style="color:#00bfff">вќ„ PRESS START</span> вЂ” Urinish: <strong>${attempt}</strong>`;
     }
 
     function die() {
@@ -1777,7 +1777,7 @@
       for (let i = 0; i < 20; i++) {
         deathParticles.push({x:player.x, y:player.y+SZ/2, vx:(Math.random()-0.5)*8, vy:(Math.random()-0.5)*8, life:40+Math.random()*20, s:3+Math.random()*5});
       }
-      scoreEl.innerHTML = `💥 Yiqildingiz! Urinish: <strong>${attempt}</strong> — Bosib qayta boshlang`;
+      scoreEl.innerHTML = `рџ’Ґ Yiqildingiz! Urinish: <strong>${attempt}</strong> вЂ” Bosib qayta boshlang`;
     }
 
     function rectCollide(ax,ay,aw,ah, bx,by,bw,bh) {
@@ -1892,7 +1892,7 @@
         } else if (obj.t === 'end') {
           if (camX >= worldX - 100) {
             won = true;
-            scoreEl.innerHTML = `🎉 <span style="color:#00ffcc">BOSQICH O'TILDI!</span> Urinishlar: <strong>${attempt}</strong>`;
+            scoreEl.innerHTML = `рџЋ‰ <span style="color:#00ffcc">BOSQICH O'TILDI!</span> Urinishlar: <strong>${attempt}</strong>`;
           }
         }
       }
@@ -2094,7 +2094,7 @@
       // Mode indicator
       ctx.fillStyle = 'rgba(0,190,255,0.5)';
       ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'left';
-      ctx.fillText(mode === 'ship' ? '🚀 SHIP' : '🟦 CUBE', 10, 16);
+      ctx.fillText(mode === 'ship' ? 'рџљЂ SHIP' : 'рџџ¦ CUBE', 10, 16);
 
       // Win overlay
       if (won) {
@@ -2139,7 +2139,7 @@
     let playerScore = 0, aiScore = 0;
     let animId;
 
-    scoreEl.innerHTML = `Siz: <strong>0</strong> — Kompyuter: <strong>0</strong>`;
+    scoreEl.innerHTML = `Siz: <strong>0</strong> вЂ” Kompyuter: <strong>0</strong>`;
 
     function resetPuck(toAI) {
       puck.x = W / 2;
@@ -2180,10 +2180,10 @@
       if (Math.abs(puck.x - W / 2) < GOAL_W / 2) {
         if (puck.y < 0) {
           playerScore++; resetPuck(true);
-          scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> — Kompyuter: <strong>${aiScore}</strong>`;
+          scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> вЂ” Kompyuter: <strong>${aiScore}</strong>`;
         } else if (puck.y > H) {
           aiScore++; resetPuck(false);
-          scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> — Kompyuter: <strong>${aiScore}</strong>`;
+          scoreEl.innerHTML = `Siz: <strong>${playerScore}</strong> вЂ” Kompyuter: <strong>${aiScore}</strong>`;
         }
       } else {
         if (puck.y < PUCK_R) { puck.y = PUCK_R; puck.vy *= -0.8; }
@@ -2262,14 +2262,14 @@
   // 13. PUPPET FIGHTER 2 (Physics-based 2 Player/Bot)
   // ============================================================
   function initPuppetFighter() {
-    const W = 800, H = 400;
+    const W = 800, H = 500;
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     canvas.className = 'game-canvas';
     canvas.style.width = '100%'; canvas.style.maxWidth = W + 'px';
-    canvas.style.height = 'auto'; canvas.style.aspectRatio = '2 / 1';
+    canvas.style.height = 'auto'; canvas.style.aspectRatio = '8 / 5';
     
-    // UI mapping for health and controls info
+    // UI
     const uiOverlay = document.createElement('div');
     uiOverlay.style.display = 'flex';
     uiOverlay.style.justifyContent = 'space-between';
@@ -2282,24 +2282,18 @@
     // P1 UI
     const p1UI = document.createElement('div');
     p1UI.innerHTML = `
-      <div style="color:#00D4AA; font-weight:bold; margin-bottom:5px;">P1: WASD + Bo'sh joy (hujum)</div>
+      <div style="color:#00D4AA; font-weight:bold; margin-bottom:5px;">P1 (KOK): WASD + Bo'sh joy (Hujum)</div>
       <div style="background:#222; border:2px solid #00D4AA; border-radius:4px; width:180px; height:18px; position:relative; overflow:hidden;">
         <div id="pf-h1" style="width:100%; height:100%; background:linear-gradient(90deg, #008866, #00D4AA); transition:width 0.1s;"></div>
-      </div>
-      <div style="background:#111; border:1px solid #aaa; border-radius:3px; width:140px; height:6px; margin-top:4px;">
-        <div id="pf-s1" style="width:100%; height:100%; background:#ffd700; transition:width 0.1s;"></div>
       </div>`;
                       
     // P2 UI
     const p2UI = document.createElement('div');
     p2UI.style.textAlign = 'right';
     p2UI.innerHTML = `
-      <div style="color:#FF6B9D; font-weight:bold; margin-bottom:5px;">P2 / Bot: Yoylar + Enter (hujum)</div>
+      <div style="color:#FF6B9D; font-weight:bold; margin-bottom:5px;">P2 / Bot (QIZIL): Yoylar + Enter</div>
       <div style="background:#222; border:2px solid #FF6B9D; border-radius:4px; width:180px; height:18px; margin-left:auto; position:relative; overflow:hidden;">
         <div id="pf-h2" style="width:100%; height:100%; background:linear-gradient(90deg, #aa0044, #FF6B9D); transition:width 0.1s; float:right;"></div>
-      </div>
-      <div style="background:#111; border:1px solid #aaa; border-radius:3px; width:140px; height:6px; margin-top:4px; margin-left:auto;">
-        <div id="pf-s2" style="width:100%; height:100%; background:#ffd700; transition:width 0.1s; float:right;"></div>
       </div>`;
                       
     uiOverlay.appendChild(p1UI);
@@ -2318,265 +2312,207 @@
     let gameOver = false;
     let winnerText = "";
     
-    // Config
-    const GRAVITY = 0.5;
-    const FRICTION = 0.88;
-    const FLOOR = H - 30;
-    
     let screenShake = 0;
     let particles = [];
+    
+    // Stars for the void background
+    let stars = [];
+    for(let i=0; i<80; i++) {
+        stars.push({
+            x: Math.random()*W, y: Math.random()*H, 
+            s: Math.random()*2+1, 
+            vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5
+        });
+    }
 
-    class Ragdoll {
-      constructor(x, color, dir, isP1) {
+    // Traps (Sawblades)
+    let saws = [
+      { rad: 120, angle: 0, speed: 0.025, spin: 0, x:0, y:0 },
+      { rad: 180, angle: Math.PI, speed: -0.018, spin: 0, x:0, y:0 }
+    ];
+
+    class FloppyPuppet {
+      constructor(x, y, color, isP1) {
         this.isP1 = isP1;
-        this.x = x;
-        this.y = FLOOR - 70;
-        this.vx = 0;
-        this.vy = 0;
+        this.x = x; this.y = y;
+        this.vx = 0; this.vy = 0;
+        this.angle = isP1 ? 0 : Math.PI; 
+        this.vAngle = 0;
+        
+        // Arm angles (world relative)
+        this.armL = this.angle - 0.5; this.vArmL = 0;
+        this.armR = this.angle + 0.5; this.vArmR = 0;
+        
         this.color = color;
-        this.dir = dir; // 1 for right, -1 for left
         this.hp = 100;
-        this.stamina = 100;
-        this.grounded = false;
+        this.dead = false;
+        this.fallScale = 1;
         
-        // Parts
-        this.headR = 14;
-        this.torsoH = 35;
-        this.armL = 30;
-        this.legL = 28;
+        this.attackCd = 0;
+        this.wepType = isP1 ? 'hammer' : 'sword';
         
-        // Angles
-        this.armAngle = dir === 1 ? Math.PI/4 : (3*Math.PI)/4;
-        this.legAngle = 0;
-        this.bodyTilt = 0;
-        
-        // Combat state
-        this.attacking = false;
-        this.attackPhase = 0; // 0-1
-        this.attackType = 0; // 0=swing, 1=stab
-        
-        // Weapon
-        this.wepL = 50;
-        this.wepType = isP1 ? 'sword' : 'hammer';
+        this.step = 0;
+        this.prevWx = this.x; this.prevWy = this.y;
       }
       
-      update(keys, botControls) {
-        // Recover stamina
-        if (!this.attacking && this.stamina < 100) this.stamina += 0.5;
+      update(ctrl) {
+        if(this.dead) {
+           if(this.fallScale > 0) this.fallScale = Math.max(0, this.fallScale - 0.05);
+           return;
+        }
         
-        // Movement processing
-        let moveX = 0;
-        let jumpBase = false;
-        let attackBase = false;
-
-        if (this.isP1) {
-          if (keys['KeyA']) moveX = -1;
-          if (keys['KeyD']) moveX = 1;
-          if (keys['KeyW']) jumpBase = true;
-          if (keys['Space']) attackBase = true;
-        } else {
-          if (botControls) {
-            moveX = botControls.moveX;
-            jumpBase = botControls.jump;
-            attackBase = botControls.attack;
-          } else {
-            if (keys['ArrowLeft']) moveX = -1;
-            if (keys['ArrowRight']) moveX = 1;
-            if (keys['ArrowUp']) jumpBase = true;
-            if (keys['Enter']) attackBase = true;
-          }
+        // Ring out check
+        if(Math.hypot(this.x - W/2, this.y - H/2) > 220) {
+            this.dead = true; this.hp = 0;
         }
-
-        // Apply movement forces
-        if (moveX !== 0) {
-          this.vx += moveX * 1.5;
-          this.dir = moveX > 0 ? 1 : -1;
-          this.legAngle += moveX * 0.2; // Walk cycle
-        } else {
-          this.legAngle *= 0.8; // Stand straight
-        }
-
-        // Jump
-        if (jumpBase && this.grounded && this.stamina >= 15) {
-          this.vy = -12;
-          this.grounded = false;
-          this.stamina -= 15;
-          spawnDust(this.x, FLOOR);
-        }
-
-        // Attack
-        if (attackBase && !this.attacking && this.stamina >= 25) {
-          this.attacking = true;
-          this.attackPhase = 0;
-          this.stamina -= 25;
-          this.attackType = Math.random() > 0.5 ? 0 : 1;
-          this.vx += this.dir * 4; // Lunge forward
-          spawnDust(this.x, FLOOR);
-        }
-
-        // Process Attack Animation
-        if (this.attacking) {
-          this.attackPhase += 0.08;
-          if (this.attackPhase >= 1) {
-            this.attacking = false;
-            this.attackPhase = 0;
-          }
+        
+        if(ctrl.x || ctrl.y) {
+          this.vx += ctrl.x * 1.2;
+          this.vy += ctrl.y * 1.2;
           
-          if (this.attackType === 0) {
-            // Swing down
-            const swingArc = Math.PI * 1.2;
-            let start = this.dir === 1 ? -Math.PI/2 : 3*Math.PI/2;
-            this.armAngle = start + this.dir * Math.sin(this.attackPhase * Math.PI) * swingArc;
-          } else {
-            // Stab forward tilt
-            this.bodyTilt = this.dir * Math.sin(this.attackPhase * Math.PI) * 0.5;
-            this.armAngle = this.dir === 1 ? 0 : Math.PI;
-          }
-        } else {
-          // Idle arm
-          this.bodyTilt *= 0.8;
-          const tiltX = (this.vx / 10);
-          this.armAngle = this.dir === 1 ? Math.PI/4 + tiltX : (3*Math.PI)/4 + tiltX;
+          let targetA = Math.atan2(ctrl.y, ctrl.x);
+          let diff = targetA - this.angle;
+          diff = Math.atan2(Math.sin(diff), Math.cos(diff)); // normalize
+          this.vAngle += diff * 0.15;
         }
-
-        // Physics
-        this.vy += GRAVITY;
-        this.vx *= FRICTION;
         
-        // Speed cap
-        this.vx = Math.max(-10, Math.min(10, this.vx));
+        // Attack Spin (Beyblade style)
+        if(ctrl.attack && this.attackCd <= 0) {
+          this.vAngle += 2.5; // huge spin torque
+          this.vx += Math.cos(this.angle) * 12; // propel forward
+          this.vy += Math.sin(this.angle) * 12;
+          this.attackCd = 35; // cooldown
+          spawnDust(this.x, this.y);
+        }
+        if(this.attackCd > 0) this.attackCd--;
 
+        // Friction & Damping
+        this.vx *= 0.88;
+        this.vy *= 0.88;
+        this.vAngle *= 0.85;
+        
         this.x += this.vx;
         this.y += this.vy;
-
-        // Ground constraint
-        if (this.y + this.torsoH + this.legL > FLOOR) {
-          this.y = FLOOR - this.torsoH - this.legL;
-          this.vy = 0;
-          this.grounded = true;
-        } else {
-          this.grounded = false;
-        }
-
-        // Wall constraint
-        if (this.x < 20) { this.x = 20; this.vx *= -0.5; }
-        if (this.x > W - 20) { this.x = W - 20; this.vx *= -0.5; }
+        this.angle += this.vAngle;
         
-        // Update UI
-        if (this.isP1) {
-          document.getElementById('pf-h1').style.width = Math.max(0, this.hp) + '%';
-          document.getElementById('pf-s1').style.width = Math.max(0, this.stamina) + '%';
-        } else {
-          document.getElementById('pf-h2').style.width = Math.max(0, this.hp) + '%';
-          document.getElementById('pf-s2').style.width = Math.max(0, this.stamina) + '%';
-        }
+        // Arms target forward but drag behind
+        let targetL = this.angle - 0.5;
+        let targetR = this.angle + 0.5;
+        
+        let dL = Math.atan2(Math.sin(targetL - this.armL), Math.cos(targetL - this.armL));
+        let dR = Math.atan2(Math.sin(targetR - this.armR), Math.cos(targetR - this.armR));
+        
+        this.vArmL += dL * 0.2;
+        this.vArmR += dR * 0.2;
+        
+        this.vArmL *= 0.85;
+        this.vArmR *= 0.85;
+        
+        this.armL += this.vArmL + this.vAngle; 
+        this.armR += this.vArmR + this.vAngle;
+        
+        // UI
+        let bar = document.getElementById(this.isP1 ? 'pf-h1' : 'pf-h2');
+        if(bar) bar.style.width = Math.max(0, this.hp) + '%';
       }
 
       draw() {
+        if(this.fallScale === 0) return;
         ctx.save();
         ctx.translate(this.x, this.y);
-        ctx.rotate(this.bodyTilt);
-
-        ctx.strokeStyle = this.color;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
         
-        // Draw Legs
-        ctx.lineWidth = 8;
-        ctx.beginPath();
-        ctx.moveTo(0, this.torsoH);
-        ctx.lineTo(Math.sin(-this.legAngle)*this.legL, this.torsoH + Math.cos(-this.legAngle)*this.legL);
-        ctx.stroke();
+        if(this.dead) {
+           ctx.scale(this.fallScale, this.fallScale);
+           ctx.rotate((1-this.fallScale)*10);
+           ctx.globalAlpha = this.fallScale;
+        }
+
+        // Walk cycle feet
+        let speed = Math.hypot(this.vx, this.vy);
+        this.step += speed * 0.1;
+        let ly = Math.sin(this.step)*12;
+        let ry = -Math.sin(this.step)*12;
         
-        ctx.beginPath();
-        ctx.moveTo(0, this.torsoH);
-        ctx.lineTo(Math.sin(this.legAngle)*this.legL, this.torsoH + Math.cos(this.legAngle)*this.legL);
-        ctx.stroke();
+        ctx.save();
+        ctx.rotate(this.angle); // face body direction
+        
+        // Feet
+        ctx.fillStyle = '#222';
+        ctx.beginPath(); ctx.arc(-8, ly, 7, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(8, ry, 7, 0, Math.PI*2); ctx.fill();
 
-        // Draw Torso
-        ctx.lineWidth = 12;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(0, this.torsoH);
-        ctx.stroke();
-
-        // Draw Head
+        // Body
+        ctx.shadowBlur = 15; ctx.shadowColor = this.color;
         ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(0, -this.headR, this.headR, 0, Math.PI*2);
-        ctx.fill();
-
-        // Draw Eyes
+        ctx.beginPath(); ctx.arc(0, 0, 16, 0, Math.PI*2); ctx.fill();
+        ctx.shadowBlur = 0;
+        
+        // Head
+        ctx.fillStyle = '#ffccaa';
+        ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI*2); ctx.fill();
+        
+        // Eyes (always face the "front" relative to rotation)
+        ctx.fillStyle = '#000';
+        ctx.beginPath(); ctx.arc(4, -4, 2, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(4, 4, 2, 0, Math.PI*2); ctx.fill();
         ctx.fillStyle = '#fff';
-        ctx.beginPath();
-        ctx.moveTo(this.dir * 4, -this.headR - 4);
-        ctx.lineTo(this.dir * 10, -this.headR + 2);
-        ctx.lineTo(this.dir * 4, -this.headR + 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(4.5, -4.5, 1, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(4.5, 3.5, 1, 0, Math.PI*2); ctx.fill();
+        ctx.restore();
 
-        // Draw Weapon Arm
-        ctx.rotate(this.armAngle);
-        ctx.lineWidth = 8;
-        ctx.strokeStyle = '#ddd';
-        ctx.beginPath();
-        ctx.moveTo(0, 5);
-        ctx.lineTo(this.wepL * 0.4, 5); // Forearm
-        ctx.stroke();
+        // Arms
+        ctx.save();
+        ctx.rotate(this.armR - this.angle); // wait, translate implies world? 
+        // No, we are translated to this.x, this.y already, but not rotated.
+        // So armR is world rotation. We simply rotate by armR directly!
+        ctx.restore(); 
         
-        // Draw Weapon
-        ctx.translate(this.wepL * 0.4, 5);
+        // Right Arm (Weapon)
+        ctx.save();
+        ctx.rotate(this.armR);
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(15, 0); ctx.stroke();
         
-        if (this.wepType === 'sword') {
-          // Sword handle
-          ctx.strokeStyle = '#553311'; ctx.lineWidth = 4;
-          ctx.beginPath(); ctx.moveTo(0, -5); ctx.lineTo(0, 5); ctx.stroke();
-          // Blade
-          ctx.shadowBlur = 10; ctx.shadowColor = '#00D4AA';
-          ctx.fillStyle = '#ccc';
-          ctx.beginPath();
-          ctx.moveTo(0, -2);
-          ctx.lineTo(this.wepL, 0);
-          ctx.lineTo(0, 2);
-          ctx.fill();
-        } else {
-          // Hammer handle
-          ctx.strokeStyle = '#6e451b'; ctx.lineWidth = 6;
-          ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(this.wepL, 0); ctx.stroke();
-          // Head
-          ctx.shadowBlur = 10; ctx.shadowColor = '#FF6B9D';
-          ctx.fillStyle = '#555';
-          ctx.fillRect(this.wepL - 10, -15, 20, 30);
+        ctx.translate(15, 0);
+        if(this.wepType === 'hammer') {
+           ctx.strokeStyle = '#6e451b'; ctx.lineWidth = 5;
+           ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(35,0); ctx.stroke();
+           ctx.fillStyle = '#555'; ctx.shadowBlur=10; ctx.shadowColor='#FF6B9D';
+           ctx.fillRect(25, -15, 20, 30);
+        } else { // sword
+           ctx.strokeStyle = '#553311'; ctx.lineWidth = 4;
+           ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(10,0); ctx.stroke();
+           ctx.strokeStyle = '#ccc'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(10,-8); ctx.lineTo(10,8); ctx.stroke();
+           ctx.fillStyle = '#ccc'; ctx.shadowBlur=10; ctx.shadowColor='#00D4AA';
+           ctx.beginPath(); ctx.moveTo(10, -4); ctx.lineTo(55, 0); ctx.lineTo(10, 4); ctx.fill();
         }
         ctx.shadowBlur = 0;
+        ctx.restore();
+
+        // Left Arm (Fist)
+        ctx.save();
+        ctx.rotate(this.armL);
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(20, 0); ctx.stroke();
+        ctx.fillStyle = '#ffccaa';
+        ctx.beginPath(); ctx.arc(20, 0, 7, 0, Math.PI*2); ctx.fill();
+        ctx.restore();
 
         ctx.restore();
       }
-
-      getDamageBox() {
-        // Calculate weapon tip in world space
-        const wX = this.x + Math.sin(this.bodyTilt) * 5 + Math.cos(this.armAngle + this.bodyTilt) * this.wepL * 1.3;
-        const wY = this.y + Math.cos(this.bodyTilt) * 5 + Math.sin(this.armAngle + this.bodyTilt) * this.wepL * 1.3;
-        return { x: wX, y: wY, r: 15 };
-      }
-      
-      getHitBox() {
-        return { x: this.x, y: this.y + this.torsoH/2, w: 30, h: this.torsoH + this.headR*2 };
-      }
     }
 
-    let p1 = new Ragdoll(150, '#00D4AA', 1, true);
-    let p2 = new Ragdoll(650, '#FF6B9D', -1, false);
+    let p1 = new FloppyPuppet(W/2 - 100, H/2, '#00D4AA', true);
+    let p2 = new FloppyPuppet(W/2 + 100, H/2, '#FF6B9D', false);
     
     const keys = {};
     let lastP2KeyTime = Date.now();
     let isVersus = false;
 
     function onKey(e) {
-      if (gameOver) return;
+      if(gameOver) return;
       keys[e.code] = e.type === 'keydown';
-      
-      // Detect human P2
-      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(e.code) && e.type === 'keydown') {
+      if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(e.code) && e.type === 'keydown') {
         lastP2KeyTime = Date.now();
         isVersus = true;
       }
@@ -2585,180 +2521,256 @@
     document.addEventListener('keyup', onKey);
 
     function spawnDust(x, y) {
-      for(let i=0; i<6; i++) {
+      for(let i=0; i<5; i++) {
         particles.push({
-          x: x + (Math.random()-0.5)*20, y: y,
-          vx: (Math.random()-0.5)*4, vy: -Math.random()*3 - 1,
-          life: 20 + Math.random()*10,
-          color: 'rgba(200,200,200,0.5)',
-          size: Math.random()*4 + 2
+          x: x + (Math.random()-0.5)*20, y: y + (Math.random()-0.5)*20,
+          vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2,
+          life: 15 + Math.random()*10, color: 'rgba(200,200,200,0.3)', size: Math.random()*5 + 2
         });
       }
     }
-
     function spawnSparks(x, y, color) {
-      for(let i=0; i<12; i++) {
+      for(let i=0; i<15; i++) {
         particles.push({
           x: x, y: y,
           vx: (Math.random()-0.5)*12, vy: (Math.random()-0.5)*12,
-          life: 15 + Math.random()*15,
-          color: color,
-          size: Math.random()*3 + 1
+          life: 15 + Math.random()*15, color: color, size: Math.random()*3 + 1
         });
       }
-      screenShake = 8;
+      screenShake = 12;
     }
 
-    function checkHit(attacker, defender) {
-      if (!attacker.attacking) return;
-      // Only hit in the middle of swing
-      if (attacker.attackPhase < 0.3 || attacker.attackPhase > 0.7) return;
+    function checkWeaponHit(attacker, defender) {
+      if(attacker.dead || defender.dead) return;
       
-      const wBox = attacker.getDamageBox();
-      const tBox = defender.getHitBox();
+      let wrad = attacker.wepType === 'hammer' ? 18 : 12;
+      let wepLen = attacker.wepType === 'hammer' ? 50 : 70;
       
-      if (Math.abs(wBox.x - tBox.x) < (wBox.r + tBox.w/2) &&
-          Math.abs(wBox.y - tBox.y) < (wBox.r + tBox.h/2)) {
-          
-        // Hit registered
-        defender.hp -= attacker.wepType === 'sword' ? 4 : 6;
-        
-        // Knockback
-        const kbDir = Math.sign(defender.x - attacker.x) || attacker.dir;
-        defender.vx = kbDir * (attacker.wepType === 'hammer' ? 12 : 8);
-        defender.vy = -6;
-        
-        spawnSparks(wBox.x, wBox.y, attacker.color);
-        
-        // End attack phase to prevent multi-hits from same swing
-        attacker.attackPhase = 0.8;
-      }
-    }
-
-    // AI Bot
-    function getBotInput() {
-      const controls = { moveX: 0, jump: false, attack: false };
+      let wx = attacker.x + Math.cos(attacker.armR) * wepLen;
+      let wy = attacker.y + Math.sin(attacker.armR) * wepLen;
       
-      const dist = p1.x - p2.x;
-      const absDist = Math.abs(dist);
+      let wSpeed = Math.hypot(wx - attacker.prevWx, wy - attacker.prevWy);
+      attacker.prevWx = wx; attacker.prevWy = wy;
       
-      if (absDist > 90) {
-        controls.moveX = Math.sign(dist);
-      } else if (absDist < 50) {
-        controls.moveX = -Math.sign(dist);
-      } else {
-        controls.moveX = Math.sign(dist) * 0.1;
-        if (p2.stamina > 40 && Math.random() < 0.1 && !p1.attacking) {
-          controls.attack = true;
-        } else if (p1.attacking && Math.random() < 0.15) {
-          controls.moveX = -Math.sign(dist);
-          controls.jump = true;
+      if(wSpeed > 5) {
+        let dx = defender.x - wx;
+        let dy = defender.y - wy;
+        let dist = Math.hypot(dx, dy);
+        if(dist < 16 + wrad) {
+           let dmg = wSpeed * 0.8;
+           defender.hp -= dmg;
+           let nx = (wx - (attacker.x + Math.cos(attacker.armR)*(wepLen-10))) / wSpeed || (dx/dist);
+           let ny = (wy - (attacker.y + Math.sin(attacker.armR)*(wepLen-10))) / wSpeed || (dy/dist);
+           
+           defender.vx += nx * wSpeed * 0.6;
+           defender.vy += ny * wSpeed * 0.6;
+           
+           attacker.vArmR *= 0.2; // dampen swing
+           attacker.vAngle *= 0.5;
+           
+           spawnSparks(wx, wy, attacker.color);
         }
       }
+    }
+
+    function resolveBodyCollision(p1, p2) {
+      if(p1.dead || p2.dead) return;
+      let dx = p2.x - p1.x;
+      let dy = p2.y - p1.y;
+      let dist = Math.hypot(dx, dy);
+      if(dist > 0 && dist < 32) { // 16 + 16 radii
+        let overlap = 32 - dist;
+        let nx = dx / dist; let ny = dy / dist;
+        p1.x -= nx * overlap * 0.5; p1.y -= ny * overlap * 0.5;
+        p2.x += nx * overlap * 0.5; p2.y += ny * overlap * 0.5;
+        
+        let dvx = p2.vx - p1.vx; let dvy = p2.vy - p1.vy;
+        let dot = dvx*nx + dvy*ny;
+        if(dot < 0) {
+          p1.vx += nx * dot * 0.8; p1.vy += ny * dot * 0.8;
+          p2.vx -= nx * dot * 0.8; p2.vy -= ny * dot * 0.8;
+        }
+      }
+    }
+
+    function getBotInput(bot, target) {
+      let ctrl = {x:0, y:0, attack:false};
+      if(bot.dead || target.dead) return ctrl;
       
-      if (p2.vx < 1 && absDist > 150 && Math.random() < 0.02) {
-        controls.jump = true;
+      let dx = target.x - bot.x;
+      let dy = target.y - bot.y;
+      let dist = Math.hypot(dx, dy);
+      
+      // Stay away from edge void
+      let centerDist = Math.hypot(bot.x - W/2, bot.y - H/2);
+      if(centerDist > 180) {
+         ctrl.x = Math.sign(W/2 - bot.x);
+         ctrl.y = Math.sign(H/2 - bot.y);
+         return ctrl;
       }
 
-      return controls;
+      // Avoid sawblades
+      for(let saw of saws) {
+         let sdx = saw.x - bot.x;
+         let sdy = saw.y - bot.y;
+         if(Math.hypot(sdx, sdy) < 90) {
+            ctrl.x = -Math.sign(sdx);
+            ctrl.y = -Math.sign(sdy);
+            return ctrl;
+         }
+      }
+
+      // Attack player
+      if(dist > 60) {
+          ctrl.x = Math.sign(dx);
+          ctrl.y = Math.sign(dy);
+      } else if (dist < 40) {
+          ctrl.x = -Math.sign(dx);
+          ctrl.y = -Math.sign(dy);
+      }
+      
+      if(dist < 100 && Math.random() < 0.05 && bot.attackCd <= 0) {
+          ctrl.attack = true;
+      }
+      
+      if(bot.vx < 1 && dist > 150 && Math.random() < 0.02) {
+          ctrl.attack = true; // occasional lunge if far
+      }
+      return ctrl;
     }
 
     function update() {
-      if (gameOver) return;
+      if(gameOver) return;
 
-      // Auto revert to bot if idle for 5s
-      if (isVersus && Date.now() - lastP2KeyTime > 5000) {
-        isVersus = false;
-      }
+      if(isVersus && Date.now() - lastP2KeyTime > 5000) isVersus = false;
 
-      let botControls = isVersus ? null : getBotInput();
+      let c1 = { x: (keys['KeyD']?1:0) - (keys['KeyA']?1:0), y: (keys['KeyS']?1:0) - (keys['KeyW']?1:0), attack: keys['Space'] };
+      let c2 = { x: (keys['ArrowRight']?1:0) - (keys['ArrowLeft']?1:0), y: (keys['ArrowDown']?1:0) - (keys['ArrowUp']?1:0), attack: keys['Enter'] };
+      
+      if(!isVersus) c2 = getBotInput(p2, p1);
 
-      p1.update(keys, null);
-      p2.update(keys, botControls);
+      p1.update(c1);
+      p2.update(c2);
+      
+      resolveBodyCollision(p1, p2);
+      checkWeaponHit(p1, p2);
+      checkWeaponHit(p2, p1);
 
-      checkHit(p1, p2);
-      checkHit(p2, p1);
+      // Sawblades logic
+      saws.forEach(saw => {
+        saw.angle += saw.speed;
+        saw.x = W/2 + Math.cos(saw.angle) * saw.rad;
+        saw.y = H/2 + Math.sin(saw.angle) * saw.rad;
+        saw.spin += 0.3;
+        
+        [p1, p2].forEach(p => {
+            if(p.dead) return;
+            let dx = p.x - saw.x;
+            let dy = p.y - saw.y;
+            let dist = Math.hypot(dx, dy);
+            if(dist < 16 + 25) { // bodyR + sawR
+                p.hp -= 2; // rapid damage
+                p.vx += Math.sign(dx) * 8;
+                p.vy += Math.sign(dy) * 8;
+                spawnSparks(p.x, p.y, '#ff3333');
+            }
+        });
+      });
 
-      // Process Particles
-      for (let i = particles.length - 1; i >= 0; i--) {
+      // Particles
+      for(let i=particles.length-1; i>=0; i--) {
         let p = particles[i];
         p.x += p.vx; p.y += p.vy;
         p.life--;
-        if (p.life <= 0) particles.splice(i, 1);
+        if(p.life <= 0) particles.splice(i,1);
       }
 
+      if(screenShake > 0) screenShake--;
+
       // Check Win
-      if (p1.hp <= 0 || p2.hp <= 0) {
+      if(p1.hp <= 0 || p2.hp <= 0) {
         gameOver = true;
-        if (p1.hp <= 0 && p2.hp <= 0) winnerText = "DURRANG!";
-        else if (p1.hp <= 0) winnerText = isVersus ? "O'YINCHI 2 G'OLIB!" : "BOT G'OLIB!";
-        else winnerText = "O'YINCHI 1 G'OLIB!";
+        if(p1.hp <= 0 && p2.hp <= 0) winnerText = "DURRANG!";
+        else if(p1.hp <= 0) winnerText = isVersus ? "QIZIL O'YINCHI G'OLIB!" : "BOT G'OLIB!";
+        else winnerText = "KOK O'YINCHI G'OLIB!";
       }
-      
-      if (screenShake > 0) screenShake--;
     }
 
     function draw() {
       ctx.save();
-      
-      if (screenShake > 0) {
-        const sx = (Math.random()-0.5) * screenShake * 2;
-        const sy = (Math.random()-0.5) * screenShake * 2;
-        ctx.translate(sx, sy);
+      // Screen shake
+      if(screenShake > 0) {
+        ctx.translate((Math.random()-0.5)*screenShake*2, (Math.random()-0.5)*screenShake*2);
       }
 
-      // Background Grid
-      ctx.fillStyle = '#0f111a';
+      // Background Void
+      ctx.fillStyle = '#050a14';
       ctx.fillRect(0, 0, W, H);
       
-      ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-      ctx.lineWidth = 1;
-      for (let x = 0; x < W; x += 30) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-      for (let y = 0; y < H; y += 30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+      // Stars
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      stars.forEach(s => {
+          s.x += s.vx; s.y += s.vy;
+          if(s.x < 0) s.x += W; if(s.x > W) s.x -= W;
+          if(s.y < 0) s.y += H; if(s.y > H) s.y -= H;
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
+      });
 
-      // Ring Floor
-      const ringL = 50, ringR = W - 50;
-      
-      const grad = ctx.createLinearGradient(0, FLOOR, 0, H);
-      grad.addColorStop(0, '#1d2238');
-      grad.addColorStop(1, '#000');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, FLOOR, W, H-FLOOR);
-      
-      ctx.shadowBlur = 10; ctx.shadowColor = '#6C63FF';
-      ctx.strokeStyle = '#6C63FF'; ctx.lineWidth = 6;
-      ctx.beginPath(); ctx.moveTo(ringL, FLOOR); ctx.lineTo(ringR, FLOOR); ctx.stroke();
+      // Arena Platform
+      ctx.save();
+      ctx.translate(W/2, H/2);
+      ctx.shadowBlur = 30; ctx.shadowColor = '#6C63FF';
+      ctx.fillStyle = '#111526';
+      ctx.beginPath(); ctx.arc(0, 0, 220, 0, Math.PI*2); ctx.fill();
       ctx.shadowBlur = 0;
+      ctx.strokeStyle = '#6C63FF'; ctx.lineWidth = 5; ctx.stroke();
       
-      // Ropes/Posts
-      ctx.fillStyle = '#444';
-      ctx.fillRect(ringL-10, FLOOR-100, 10, 100);
-      ctx.fillRect(ringR, FLOOR-100, 10, 100);
-      ctx.strokeStyle = 'rgba(255,50,50,0.5)'; ctx.lineWidth=3;
-      ctx.beginPath(); ctx.moveTo(ringL, FLOOR-80); ctx.lineTo(ringR, FLOOR-80); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(ringL, FLOOR-40); ctx.lineTo(ringR, FLOOR-40); ctx.stroke();
+      // Arena Grid Pattern
+      ctx.clip(); // draw grid only inside ring
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 2;
+      for(let x=-220; x<220; x+=40) {
+        ctx.beginPath(); ctx.moveTo(x, -220); ctx.lineTo(x, 220); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-220, x); ctx.lineTo(220, x); ctx.stroke();
+      }
+      ctx.restore();
 
-      // Bot Indicator
-      if (!isVersus && !gameOver) {
+      // Draw Sawblades
+      saws.forEach(saw => {
+        ctx.save();
+        ctx.translate(saw.x, saw.y);
+        ctx.rotate(saw.spin);
+        ctx.fillStyle = '#999';
+        ctx.beginPath();
+        for(let i=0; i<8; i++) {
+            let a = i * Math.PI/4;
+            ctx.lineTo(Math.cos(a)*28, Math.sin(a)*28);
+            ctx.lineTo(Math.cos(a+0.2)*18, Math.sin(a+0.2)*18);
+        }
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#ff3333'; ctx.beginPath(); ctx.arc(0,0,8,0,Math.PI*2); ctx.fill();
+        ctx.restore();
+      });
+
+      if(!isVersus && !gameOver && !p2.dead) {
         ctx.fillStyle = 'rgba(255,107,157,0.5)';
         ctx.font = 'bold 12px monospace'; ctx.textAlign = 'center';
-        ctx.fillText('🤖 BOT', p2.x, p2.y - 45);
+        ctx.fillText('🤖 BOT', p2.x, p2.y - 30);
       }
 
-      // Draw Entities
+      // Draw Players
       p1.draw();
       p2.draw();
 
       // Particles
       particles.forEach(p => {
-        ctx.globalAlpha = p.life / 30;
+        ctx.globalAlpha = p.life / 35;
         ctx.fillStyle = p.color;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
       });
       ctx.globalAlpha = 1;
 
       // Overlay
-      if (gameOver) {
+      if(gameOver) {
         ctx.fillStyle = 'rgba(0,0,0,0.85)';
         ctx.fillRect(0, 0, W, H);
         ctx.shadowBlur = 15; ctx.shadowColor = '#FFD700';
@@ -2768,10 +2780,7 @@
         ctx.shadowBlur = 0;
         ctx.fillStyle = '#fff';
         ctx.font = '18px monospace';
-        ctx.fillText(`P1 Qoldiq: ${Math.max(0, p1.hp)}% | P2 Qoldiq: ${Math.max(0, p2.hp)}%`, W/2, H/2 + 25);
-        ctx.fillStyle = '#aaa';
-        ctx.font = '14px monospace';
-        ctx.fillText("Qayta boshlash uchun '🔄 Qayta' tugmasini bosing", W/2, H/2 + 55);
+        ctx.fillText(`Qayta boshlash uchun '🔄 Qayta' tugmasini bosing`, W/2, H/2 + 30);
       }
 
       ctx.restore();
@@ -2780,7 +2789,7 @@
     function loop() {
       update();
       draw();
-      if (!gameOver) animId = requestAnimationFrame(loop);
+      if(!gameOver) animId = requestAnimationFrame(loop);
       else draw();
     }
     
