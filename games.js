@@ -2511,6 +2511,9 @@
 
     function onKey(e) {
       if(gameOver) return;
+      if(['Space', 'Enter', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+         e.preventDefault();
+      }
       keys[e.code] = e.type === 'keydown';
       if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(e.code) && e.type === 'keydown') {
         lastP2KeyTime = Date.now();
